@@ -1,4 +1,5 @@
-import { Hov } from './ui.jsx';
+import { Hov } from './ui.jsx'
+import { useResponsive } from './responsive.js';
 import { pageHref } from '../i18n.js';
 
 const TABLES = [
@@ -49,11 +50,12 @@ const CARD = {
 const CARD_HV = { transform: 'translateY(-6px)', boxShadow: '0 18px 40px -24px rgba(16,50,47,0.45)', borderColor: '#B07C1F' };
 
 export default function WorkPage({ t }) {
+  const { isMobile, isTablet } = useResponsive();
   return (
-    <main style={{ maxWidth: 1240, margin: '0 auto', padding: '88px 32px 96px', display: 'flex', flexDirection: 'column', gap: 52 }}>
+    <main style={{ maxWidth: 1240, margin: '0 auto', padding: isMobile ? '56px 20px 64px' : isTablet ? '72px 32px 80px' : '88px 32px 96px', display: 'flex', flexDirection: 'column', gap: isMobile ? 40 : 52 }}>
       <div data-reveal="1" style={{ display: 'flex', flexDirection: 'column', gap: 18, maxWidth: '64ch' }}>
         <div style={{ fontSize: 11, letterSpacing: 3, textTransform: 'uppercase', color: '#B07C1F' }}>{t('Opening offer')}</div>
-        <h1 style={{ margin: 0, fontFamily: 'var(--wb-serif)', fontSize: 62, fontWeight: 600, lineHeight: 1, textWrap: 'balance' }}>
+        <h1 style={{ margin: 0, fontFamily: 'var(--wb-serif)', fontSize: isMobile ? 34 : isTablet ? 48 : 62, fontWeight: 600, lineHeight: 1, textWrap: 'balance' }}>
           {t('The first three tables eat at the opening rate.')}
         </h1>
         <p style={{ margin: 0, fontSize: 16, lineHeight: 1.85, color: '#3C5A50', textWrap: 'pretty' }}>
@@ -64,7 +66,7 @@ export default function WorkPage({ t }) {
         </p>
       </div>
 
-      <div data-reveal="1" style={{ background: '#10322F', padding: '30px 34px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 28, flexWrap: 'wrap' }}>
+      <div data-reveal="1" style={{ background: '#10322F', padding: isMobile ? '22px 20px' : '30px 34px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 20, flexWrap: 'wrap' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <span style={{ width: 12, height: 12, borderRadius: '50%', background: '#E0A93B', animation: 'wb-blink 1.6s ease-in-out infinite' }} />
           <span style={{ fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', color: '#F6EFE2' }}>
@@ -90,7 +92,7 @@ export default function WorkPage({ t }) {
         ))}
       </div>
 
-      <div data-reveal="1" style={{ background: '#EFE5D3', border: '1px solid #E2D7C3', padding: '44px 42px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 34 }}>
+      <div data-reveal="1" style={{ background: '#EFE5D3', border: '1px solid #E2D7C3', padding: isMobile ? '32px 20px' : '44px 42px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: isMobile ? 24 : 34 }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <div style={{ fontSize: 11, letterSpacing: 3, textTransform: 'uppercase', color: '#B07C1F' }}>{t('The risk is mine')}</div>
           <h2 style={{ margin: 0, fontFamily: 'var(--wb-serif)', fontSize: 34, fontWeight: 600, lineHeight: 1.05 }}>{t('Nothing to lose by ordering')}</h2>

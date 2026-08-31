@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { Hov } from './ui.jsx';
+import { Hov } from './ui.jsx'
+import { useResponsive } from './responsive.js';
 import { CONTACT, pageHref, FLAP } from '../i18n.js';
 
 // Hearth flames under the closing CTA (positions/sizes/durations exactly as the design)
@@ -195,16 +196,20 @@ export default function HomePage({ t, lang, url, o, score, secs, perfLabel, pain
     };
   }, []);
 
+  const { isMobile, isTablet, isDesktop } = useResponsive();
+  // Section rhythm shrinks on small screens (design: 88px desktop)
+  const sectionPad = isMobile ? '56px 20px' : isTablet ? '72px 32px' : '88px 32px';
+
   return (
     <main>
       <section
         style={{
           maxWidth: 1240,
           margin: '0 auto',
-          padding: '96px 32px 72px',
+          padding: isMobile ? '48px 20px 40px' : isTablet ? '72px 32px 56px' : '96px 32px 72px',
           display: 'grid',
-          gridTemplateColumns: 'minmax(0, 1.15fr) minmax(0, 0.85fr)',
-          gap: 64,
+          gridTemplateColumns: isDesktop ? 'minmax(0, 1.15fr) minmax(0, 0.85fr)' : 'minmax(0, 1fr)',
+          gap: isDesktop ? 64 : 44,
           alignItems: 'center',
         }}
       >
@@ -217,10 +222,10 @@ export default function HomePage({ t, lang, url, o, score, secs, perfLabel, pain
             style={{
               margin: 0,
               fontFamily: 'var(--wb-serif)',
-              fontSize: 78,
+              fontSize: isMobile ? 42 : isTablet ? 60 : 78,
               fontWeight: 600,
               lineHeight: 0.98,
-              letterSpacing: '-1px',
+              letterSpacing: isMobile ? 0 : '-1px',
               textWrap: 'balance',
               animation: 'wb-wipe 1.1s cubic-bezier(.22,.9,.24,1) .16s both',
             }}
@@ -379,10 +384,10 @@ export default function HomePage({ t, lang, url, o, score, secs, perfLabel, pain
           style={{
             maxWidth: 1240,
             margin: '0 auto',
-            padding: '76px 32px',
+            padding: isMobile ? '52px 20px' : '76px 32px',
             display: 'grid',
-            gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 0.9fr)',
-            gap: 56,
+            gridTemplateColumns: isDesktop ? 'minmax(0, 1fr) minmax(0, 0.9fr)' : 'minmax(0, 1fr)',
+            gap: isDesktop ? 56 : 44,
             alignItems: 'center',
           }}
         >
@@ -391,7 +396,7 @@ export default function HomePage({ t, lang, url, o, score, secs, perfLabel, pain
               <span style={{ width: 28, height: 1, background: '#E0A93B' }} />
               {t('On the pass')}
             </div>
-            <h2 style={{ margin: 0, fontFamily: 'var(--wb-serif)', fontSize: 46, fontWeight: 600, color: '#F6EFE2', lineHeight: 1.05, textWrap: 'balance' }}>
+            <h2 style={{ margin: 0, fontFamily: 'var(--wb-serif)', fontSize: isMobile ? 32 : 46, fontWeight: 600, color: '#F6EFE2', lineHeight: 1.05, textWrap: 'balance' }}>
               {t('Every job leaves the kitchen the same way.')}
             </h2>
             <p style={{ margin: 0, fontSize: 15, lineHeight: 1.85, color: '#C8D6CD', maxWidth: '44ch', textWrap: 'pretty' }}>
@@ -494,10 +499,10 @@ export default function HomePage({ t, lang, url, o, score, secs, perfLabel, pain
           style={{
             maxWidth: 1240,
             margin: '0 auto',
-            padding: '84px 32px',
+            padding: isMobile ? '52px 20px' : '84px 32px',
             display: 'grid',
-            gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 0.92fr)',
-            gap: 44,
+            gridTemplateColumns: isDesktop ? 'minmax(0, 1fr) minmax(0, 0.92fr)' : 'minmax(0, 1fr)',
+            gap: isDesktop ? 44 : 48,
             alignItems: 'center',
             position: 'relative',
           }}
@@ -507,7 +512,7 @@ export default function HomePage({ t, lang, url, o, score, secs, perfLabel, pain
               <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#E0A93B', animation: 'wb-ember 2.1s ease-in-out infinite' }} />
               {t('The pass board')}
             </div>
-            <h2 style={{ margin: 0, fontFamily: 'var(--wb-serif)', fontSize: 44, fontWeight: 600, color: '#F6EFE2', lineHeight: 1.05 }}>
+            <h2 style={{ margin: 0, fontFamily: 'var(--wb-serif)', fontSize: isMobile ? 30 : isTablet ? 38 : 44, fontWeight: 600, color: '#F6EFE2', lineHeight: 1.05 }}>
               {t('Tonight the kitchen is cooking')}
             </h2>
             <div
@@ -526,13 +531,13 @@ export default function HomePage({ t, lang, url, o, score, secs, perfLabel, pain
                 ref={flapRef}
                 style={{
                   fontFamily: 'var(--wb-serif)',
-                  fontSize: 54,
+                  fontSize: isMobile ? 32 : isTablet ? 44 : 54,
                   fontWeight: 600,
                   lineHeight: 1.08,
                   color: '#E0A93B',
                   transformOrigin: '50% 50%',
                   textWrap: 'balance',
-                  minHeight: 60,
+                  minHeight: isMobile ? 38 : 60,
                 }}
               >
                 {flapWord}
@@ -547,7 +552,20 @@ export default function HomePage({ t, lang, url, o, score, secs, perfLabel, pain
             </div>
           </div>
           <div data-reveal="1" style={{ display: 'flex', justifyContent: 'center', minWidth: 0 }}>
-            <div data-para="-28" style={{ position: 'relative', width: 300, height: 384, willChange: 'transform' }}>
+            {/* Parallax wrapper (data-para) + scaled inner scene on small screens */}
+            <div
+              data-para="-28"
+              style={{ width: isMobile ? 240 : 300, height: isMobile ? 307 : 384, willChange: 'transform' }}
+            >
+              <div
+                style={{
+                  position: 'relative',
+                  width: 300,
+                  height: 384,
+                  transformOrigin: 'top left',
+                  transform: isMobile ? 'scale(0.8)' : 'none',
+                }}
+              >
               {/* Kitchen rail */}
               <div
                 style={{
@@ -661,16 +679,17 @@ export default function HomePage({ t, lang, url, o, score, secs, perfLabel, pain
                   </defs>
                 </svg>
               </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section style={{ maxWidth: 1240, margin: '0 auto', padding: '88px 32px', display: 'flex', flexDirection: 'column', gap: 40 }}>
+      <section style={{ maxWidth: 1240, margin: '0 auto', padding: sectionPad, display: 'flex', flexDirection: 'column', gap: 40 }}>
         <div data-reveal="1" style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 24, flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             <div style={{ fontSize: 11, letterSpacing: 3, textTransform: 'uppercase', color: '#B07C1F' }}>{t("Today's specials")}</div>
-            <h2 style={{ margin: 0, fontFamily: 'var(--wb-serif)', fontSize: 46, fontWeight: 600, lineHeight: 1 }}>{t('Three things I cook most')}</h2>
+            <h2 style={{ margin: 0, fontFamily: 'var(--wb-serif)', fontSize: isMobile ? 32 : 46, fontWeight: 600, lineHeight: 1 }}>{t('Three things I cook most')}</h2>
           </div>
           <a
             href={pageHref('work')}
@@ -719,7 +738,7 @@ export default function HomePage({ t, lang, url, o, score, secs, perfLabel, pain
         </div>
       </section>
       {/* ── By the numbers: animated dial gauges ── */}
-      <section style={{ maxWidth: 1240, margin: '0 auto', padding: '0 32px 88px', display: 'flex', flexDirection: 'column', gap: 26 }}>
+      <section style={{ maxWidth: 1240, margin: '0 auto', padding: isMobile ? '0 20px 56px' : isTablet ? '0 32px 72px' : '0 32px 88px', display: 'flex', flexDirection: 'column', gap: 26 }}>
         <div data-reveal="1" style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
           <span style={{ fontSize: 11, letterSpacing: 3, textTransform: 'uppercase', color: '#B07C1F' }}>{t('By the numbers')}</span>
           <span style={{ flex: 1, height: 1, background: '#E2D7C3' }} />
@@ -732,10 +751,10 @@ export default function HomePage({ t, lang, url, o, score, secs, perfLabel, pain
       </section>
 
       <section style={{ background: '#EFE5D3', borderTop: '1px solid #E2D7C3', borderBottom: '1px solid #E2D7C3' }}>
-        <div style={{ maxWidth: 1240, margin: '0 auto', padding: '88px 32px', display: 'flex', flexDirection: 'column', gap: 44 }}>
+        <div style={{ maxWidth: 1240, margin: '0 auto', padding: isMobile ? '56px 20px' : isTablet ? '72px 32px' : '88px 32px', display: 'flex', flexDirection: 'column', gap: 44 }}>
           <div data-reveal="1" style={{ display: 'flex', flexDirection: 'column', gap: 14, maxWidth: '66ch' }}>
             <div style={{ fontSize: 11, letterSpacing: 3, textTransform: 'uppercase', color: '#B07C1F' }}>{t('House rules')}</div>
-            <h2 style={{ margin: 0, fontFamily: 'var(--wb-serif)', fontSize: 46, fontWeight: 600, lineHeight: 1 }}>{t('What you get, in writing')}</h2>
+            <h2 style={{ margin: 0, fontFamily: 'var(--wb-serif)', fontSize: isMobile ? 32 : 46, fontWeight: 600, lineHeight: 1 }}>{t('What you get, in writing')}</h2>
             <p style={{ margin: 0, fontSize: 15, lineHeight: 1.85, color: '#3C5A50', textWrap: 'pretty' }}>
               {t("The kitchen is new, so I'll skip the wall of client logos. These four rules go in every quote I send. Hold me to them.")}
             </p>
@@ -756,8 +775,8 @@ export default function HomePage({ t, lang, url, o, score, secs, perfLabel, pain
         </div>
       </section>
 
-      <section style={{ maxWidth: 1240, margin: '0 auto', padding: '88px 32px' }}>
-        <div data-reveal="1" style={{ position: 'relative', overflow: 'hidden', background: '#10322F', padding: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 40, flexWrap: 'wrap' }}>
+      <section style={{ maxWidth: 1240, margin: '0 auto', padding: sectionPad }}>
+        <div data-reveal="1" style={{ position: 'relative', overflow: 'hidden', background: '#10322F', padding: isMobile ? '44px 20px' : 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 40, flexWrap: 'wrap' }}>
           {/* Hearth glow + flames along the bottom edge */}
           <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 150, pointerEvents: 'none', overflow: 'hidden' }}>
             <div
@@ -789,7 +808,7 @@ export default function HomePage({ t, lang, url, o, score, secs, perfLabel, pain
             <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 5, background: 'linear-gradient(90deg, #B07C1F, #E0A93B, #B07C1F)' }} />
           </div>
           <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', gap: 14, maxWidth: '52ch' }}>
-            <h2 style={{ margin: 0, fontFamily: 'var(--wb-serif)', fontSize: 44, fontWeight: 600, color: '#F6EFE2', lineHeight: 1.05 }}>
+            <h2 style={{ margin: 0, fontFamily: 'var(--wb-serif)', fontSize: isMobile ? 30 : 44, fontWeight: 600, color: '#F6EFE2', lineHeight: 1.05 }}>
               {t('Hungry? Tell me what you need.')}
             </h2>
             <p style={{ margin: 0, fontSize: 15, lineHeight: 1.8, color: '#C8D6CD', textWrap: 'pretty' }}>
@@ -803,6 +822,9 @@ export default function HomePage({ t, lang, url, o, score, secs, perfLabel, pain
             style={{
               position: 'relative',
               cursor: 'pointer',
+              width: isMobile ? '100%' : 'auto',
+              textAlign: 'center',
+              boxSizing: 'border-box',
               fontSize: 12,
               letterSpacing: 2,
               textTransform: 'uppercase',

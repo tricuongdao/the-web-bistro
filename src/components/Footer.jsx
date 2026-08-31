@@ -1,18 +1,21 @@
 import { MarkAwning } from './Marks.jsx';
-import { Hov } from './ui.jsx';
+import { Hov } from './ui.jsx'
+import { useResponsive } from './responsive.js';
 import { PAGES, pageHref, CONTACT } from '../i18n.js';
 
 export default function Footer({ t }) {
+  const { isMobile } = useResponsive();
   return (
     <footer style={{ background: '#0B2422', borderTop: '4px solid #E0A93B' }}>
       <div
         style={{
           maxWidth: 1240,
           margin: '0 auto',
-          padding: '56px 32px 40px',
+          padding: isMobile ? '40px 20px 28px' : '56px 32px 40px',
           display: 'flex',
+          flexDirection: isMobile ? 'column' : 'row',
           justifyContent: 'space-between',
-          gap: 40,
+          gap: isMobile ? 32 : 40,
           flexWrap: 'wrap',
         }}
       >
@@ -27,7 +30,7 @@ export default function Footer({ t }) {
             </span>
           </div>
         </div>
-        <div style={{ display: 'flex', gap: 56, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: isMobile ? 36 : 56, flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             <span style={{ fontSize: 10, letterSpacing: 2, textTransform: 'uppercase', color: '#7C8A7F' }}>
               {t('Pages')}

@@ -1,9 +1,11 @@
 import { useEffect, useRef } from 'react';
 import { MarkAwning } from './Marks.jsx';
-import { Hov } from './ui.jsx';
+import { Hov } from './ui.jsx'
+import { useResponsive } from './responsive.js';
 import { PAGES, pageHref, CONTACT } from '../i18n.js';
 
 export default function Header({ t, langLabel, onToggleLang }) {
+  const { isMobile } = useResponsive();
   // Scroll progress bar inside the striped strip (as in the design's progressRef)
   const progRef = useRef(null);
   useEffect(() => {
@@ -37,11 +39,12 @@ export default function Header({ t, langLabel, onToggleLang }) {
         style={{
           maxWidth: 1240,
           margin: '0 auto',
-          padding: '16px 32px',
+          padding: isMobile ? '12px 16px' : '16px 32px',
           display: 'flex',
+          flexDirection: isMobile ? 'column' : 'row',
           alignItems: 'center',
           justifyContent: 'space-between',
-          gap: 24,
+          gap: isMobile ? 10 : 24,
         }}
       >
         {/* Real anchor: keyboard focusable, middle-click, back/forward aware */}
@@ -74,9 +77,10 @@ export default function Header({ t, langLabel, onToggleLang }) {
           style={{
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'flex-end',
+            justifyContent: isMobile ? 'center' : 'flex-end',
             flexWrap: 'wrap',
-            gap: '14px 22px',
+            rowGap: isMobile ? 8 : 14,
+            columnGap: isMobile ? 14 : 22,
           }}
         >
           {PAGES.map(([label, pg]) => (

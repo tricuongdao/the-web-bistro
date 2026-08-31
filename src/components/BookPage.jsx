@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { MarkAwning } from './Marks.jsx';
-import { Hov, Field } from './ui.jsx';
+import { Hov, Field } from './ui.jsx'
+import { useResponsive } from './responsive.js';
 import { DISHES, DISHES_VI, CONTACT, FORM_ENDPOINT } from '../i18n.js';
 
 const INPUT = {
@@ -22,6 +23,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const EMPTY = { name: '', email: '', note: '', picked: [] };
 
 export default function BookPage({ t, lang }) {
+  const { isMobile, isTablet } = useResponsive();
   const [form, setForm] = useState(EMPTY);
   const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -105,10 +107,10 @@ export default function BookPage({ t, lang }) {
       style={{
         maxWidth: 1100,
         margin: '0 auto',
-        padding: '88px 32px 96px',
+        padding: isMobile ? '56px 20px 64px' : isTablet ? '72px 32px 80px' : '88px 32px 96px',
         display: 'grid',
-        gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1.15fr)',
-        gap: 56,
+        gridTemplateColumns: isMobile ? 'minmax(0, 1fr)' : 'minmax(0, 1fr) minmax(0, 1.15fr)',
+        gap: isMobile ? 44 : 56,
         alignItems: 'start',
       }}
     >
@@ -121,7 +123,7 @@ export default function BookPage({ t, lang }) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 18, borderTop: '1px solid #E2D7C3', paddingTop: 26 }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
             <span style={LABEL}>Email</span>
-            <a href={`mailto:${CONTACT.email}`} style={{ fontFamily: 'var(--wb-serif)', fontSize: 24, fontWeight: 600 }}>
+            <a href={`mailto:${CONTACT.email}`} style={{ fontFamily: 'var(--wb-serif)', fontSize: isMobile ? 19 : 24, fontWeight: 600, wordBreak: 'break-all' }}>
               {CONTACT.email}
             </a>
           </div>
@@ -143,7 +145,7 @@ export default function BookPage({ t, lang }) {
           </div>
         </div>
       </div>
-      <div data-reveal="1" style={{ background: '#FFFBF3', border: '1px solid #E2D7C3', padding: 40 }}>
+      <div data-reveal="1" style={{ background: '#FFFBF3', border: '1px solid #E2D7C3', padding: isMobile ? 24 : 40, boxSizing: 'border-box', minWidth: 0 }}>
         {sent ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 18, alignItems: 'flex-start', padding: '20px 0' }}>
             <MarkAwning size={72} variant="icon" stripeB="#10322F" trim="#10322F" />

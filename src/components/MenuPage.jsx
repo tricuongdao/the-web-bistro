@@ -1,4 +1,5 @@
-import { Hov } from './ui.jsx';
+import { Hov } from './ui.jsx'
+import { useResponsive } from './responsive.js';
 import { pageHref } from '../i18n.js';
 
 const ROW = {
@@ -11,11 +12,11 @@ const ROW = {
 };
 const ROW_HV = { background: '#FFFBF3', paddingLeft: 12 };
 
-function Row({ t, title, meta, body }) {
+function Row({ t, title, meta, body, isMobile }) {
   return (
-    <Hov hv={ROW_HV} style={ROW}>
+    <Hov hv={ROW_HV} style={{ ...ROW, gridTemplateColumns: isMobile ? 'minmax(0, 1fr)' : ROW.gridTemplateColumns, gap: isMobile ? 14 : 32 }}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-        <h3 style={{ margin: 0, fontFamily: 'var(--wb-serif)', fontSize: 24, fontWeight: 600 }}>{t(title)}</h3>
+        <h3 style={{ margin: 0, fontFamily: 'var(--wb-serif)', fontSize: isMobile ? 20 : 24, fontWeight: 600 }}>{t(title)}</h3>
         <span style={{ fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', color: '#B07C1F' }}>{t(meta)}</span>
       </div>
       <p style={{ margin: 0, fontSize: 14, lineHeight: 1.8, color: '#3C5A50', textWrap: 'pretty' }}>{t(body)}</p>
@@ -25,20 +26,21 @@ function Row({ t, title, meta, body }) {
 
 function SectionHead({ t, title, note }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'baseline', gap: 16, marginBottom: 12 }}>
+    <div style={{ display: 'flex', alignItems: 'baseline', gap: 16, marginBottom: 12, flexWrap: 'wrap' }}>
       <h2 style={{ margin: 0, fontFamily: 'var(--wb-serif)', fontSize: 34, fontWeight: 600 }}>{t(title)}</h2>
-      <div style={{ flex: 1, height: 1, background: '#E2D7C3' }} />
+      <div style={{ flex: 1, height: 1, background: '#E2D7C3', minWidth: 40 }} />
       <span style={{ fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', color: '#7C8A7F' }}>{t(note)}</span>
     </div>
   );
 }
 
 export default function MenuPage({ t }) {
+  const { isMobile, isTablet } = useResponsive();
   return (
-    <main style={{ maxWidth: 1040, margin: '0 auto', padding: '88px 32px 96px', display: 'flex', flexDirection: 'column', gap: 64 }}>
+    <main style={{ maxWidth: 1040, margin: '0 auto', padding: isMobile ? '56px 20px 64px' : isTablet ? '72px 32px 80px' : '88px 32px 96px', display: 'flex', flexDirection: 'column', gap: isMobile ? 44 : 64 }}>
       <div data-reveal="1" style={{ display: 'flex', flexDirection: 'column', gap: 18, alignItems: 'center', textAlign: 'center' }}>
         <div style={{ fontSize: 11, letterSpacing: 3, textTransform: 'uppercase', color: '#B07C1F' }}>{t('The menu')}</div>
-        <h1 style={{ margin: 0, fontFamily: 'var(--wb-serif)', fontSize: 64, fontWeight: 600, lineHeight: 1 }}>{t('Everything I serve')}</h1>
+        <h1 style={{ margin: 0, fontFamily: 'var(--wb-serif)', fontSize: isMobile ? 38 : isTablet ? 52 : 64, fontWeight: 600, lineHeight: 1 }}>{t('Everything I serve')}</h1>
         <p style={{ margin: 0, fontSize: 15, lineHeight: 1.8, color: '#3C5A50', maxWidth: '58ch', textWrap: 'pretty' }}>
           {t("No fixed prices, because no two jobs are the same size. Tell me the dish and I'll quote the plate inside a day.")}
         </p>
@@ -48,16 +50,16 @@ export default function MenuPage({ t }) {
       <div data-reveal="1" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         <SectionHead t={t} title="Starters" note="Small, fast, done in a week" />
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <Row t={t} title="Landing Page" meta="1 page · 1 week" body="One page built around a single action: call, book or buy. Copy, form and tracking come with it." />
-          <Row t={t} title="Site Rescue" meta="Audit · fix · hand back" body="Your current site, fast and readable again. I strip the bloat, fix what broke, and write down every change I made." />
+          <Row t={t} isMobile={isMobile} title="Landing Page" meta="1 page · 1 week" body="One page built around a single action: call, book or buy. Copy, form and tracking come with it." />
+          <Row t={t} isMobile={isMobile} title="Site Rescue" meta="Audit · fix · hand back" body="Your current site, fast and readable again. I strip the bloat, fix what broke, and write down every change I made." />
         </div>
       </div>
       <div data-reveal="1" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         <SectionHead t={t} title="Mains" note="The full build" />
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <Row t={t} title="Marketing Website" meta="5–8 pages · 3–4 weeks" body="The site your customers judge you by. Structure, words and design built around what you sell, plus an editor you can use without me." />
-          <Row t={t} title="Online Store" meta="Payments · stock · shipping" body="A shop that takes money without drama and holds up at Christmas. Handover walks you through every screen you'll touch." />
-          <Row t={t} title="Web App" meta="Scoped per project" body="Booking systems, client portals, dashboards. Custom software with a front door your customers understand." />
+          <Row t={t} isMobile={isMobile} title="Marketing Website" meta="5–8 pages · 3–4 weeks" body="The site your customers judge you by. Structure, words and design built around what you sell, plus an editor you can use without me." />
+          <Row t={t} isMobile={isMobile} title="Online Store" meta="Payments · stock · shipping" body="A shop that takes money without drama and holds up at Christmas. Handover walks you through every screen you'll touch." />
+          <Row t={t} isMobile={isMobile} title="Web App" meta="Scoped per project" body="Booking systems, client portals, dashboards. Custom software with a front door your customers understand." />
         </div>
       </div>
 
@@ -80,7 +82,7 @@ export default function MenuPage({ t }) {
         </div>
       </div>
 
-      <div data-reveal="1" style={{ background: '#10322F', padding: '44px 48px', display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1.4fr)', gap: 32, alignItems: 'center' }}>
+      <div data-reveal="1" style={{ background: '#10322F', padding: isMobile ? '32px 20px' : '44px 48px', display: 'grid', gridTemplateColumns: isMobile ? 'minmax(0, 1fr)' : 'minmax(0, 1fr) minmax(0, 1.4fr)', gap: isMobile ? 12 : 32, alignItems: 'center' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           <span style={{ fontSize: 11, letterSpacing: 3, textTransform: 'uppercase', color: '#E0A93B' }}>{t('Standing order')}</span>
           <h2 style={{ margin: 0, fontFamily: 'var(--wb-serif)', fontSize: 32, fontWeight: 600, color: '#F6EFE2' }}>{t('Hosting & Care')}</h2>
