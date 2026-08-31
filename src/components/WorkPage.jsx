@@ -36,7 +36,9 @@ const TABLES = [
 
 const CARD = {
   background: '#FFFBF3',
-  border: '1px solid #E2D7C3',
+  borderWidth: 1,
+  borderStyle: 'solid',
+  borderColor: '#E2D7C3',
   minWidth: 0,
   padding: '32px 30px',
   display: 'flex',

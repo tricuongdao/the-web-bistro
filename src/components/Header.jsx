@@ -1,8 +1,28 @@
+import { useEffect, useRef } from 'react';
 import { MarkAwning } from './Marks.jsx';
 import { Hov } from './ui.jsx';
 import { PAGES, pageHref, CONTACT } from '../i18n.js';
 
 export default function Header({ t, langLabel, onToggleLang }) {
+  // Scroll progress bar inside the striped strip (as in the design's progressRef)
+  const progRef = useRef(null);
+  useEffect(() => {
+    const onScroll = () => {
+      if (!progRef.current) return;
+      const d = document.documentElement;
+      const max = d.scrollHeight - d.clientHeight;
+      const y = window.scrollY || d.scrollTop || 0;
+      progRef.current.style.width = `${(max > 0 ? Math.min(1, y / max) * 100 : 0).toFixed(2)}%`;
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, []);
+
   return (
     <header
       style={{
@@ -25,7 +45,12 @@ export default function Header({ t, langLabel, onToggleLang }) {
         }}
       >
         {/* Real anchor: keyboard focusable, middle-click, back/forward aware */}
-        <a href="#/" style={{ display: 'flex', alignItems: 'center', gap: 12, textDecoration: 'none' }}>
+        <Hov
+          as="a"
+          href={pageHref('home')}
+          hv={{ transform: 'translateY(-3px)' }}
+          style={{ display: 'flex', alignItems: 'center', gap: 12, textDecoration: 'none', cursor: 'pointer', transition: 'transform .3s cubic-bezier(.3,1.4,.4,1)' }}
+        >
           <MarkAwning size={42} variant="icon" />
           <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
             <span
@@ -44,7 +69,7 @@ export default function Header({ t, langLabel, onToggleLang }) {
               {t('Web development')}
             </span>
           </div>
-        </a>
+        </Hov>
         <nav
           style={{
             display: 'flex',
@@ -122,7 +147,18 @@ export default function Header({ t, langLabel, onToggleLang }) {
           </Hov>
         </nav>
       </div>
-      <div style={{ height: 4, background: 'repeating-linear-gradient(90deg, #E0A93B 0 28px, #F6EFE2 28px 56px)' }} />
+      <div
+        style={{
+          position: 'relative',
+          height: 5,
+          background: 'repeating-linear-gradient(90deg, #E0A93B 0 28px, #F6EFE2 28px 56px)',
+          overflow: 'hidden',
+          transformOrigin: '50% 0',
+          animation: 'wb-drop .8s cubic-bezier(.3,1.35,.4,1) both',
+        }}
+      >
+        <div ref={progRef} style={{ height: '100%', width: '0%', background: '#10322F', opacity: 0.55 }} />
+      </div>
     </header>
   );
 }

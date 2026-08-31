@@ -6,7 +6,7 @@ export const I18N = {
   'Reservations': 'Đặt bàn',
   'Email me': 'Gửi email',
   'Two of three opening tables free': 'Còn trống 2 trong 3 bàn khai trương',
-  'Websites, made to order.': 'Website làm theo yêu cầu.',
+  'Websites that bring customers in.': 'Website mang khách hàng đến cho bạn.',
   'You tell me what your business needs to do. I build the site that does it, then hand you the keys. No page builders, no plugin sprawl, and no invoice you cannot read.': 'Bạn cho tôi biết doanh nghiệp cần gì. Tôi xây website làm đúng việc đó rồi giao chìa khoá cho bạn. Không page builder, không nhồi plugin, không hoá đơn khó hiểu.',
   'Read the menu': 'Xem thực đơn',
   'You will get a reply within a day': 'Bạn sẽ nhận phản hồi trong vòng một ngày',
@@ -126,6 +126,14 @@ export const I18N = {
   'Please add a valid email address.': 'Vui lòng nhập địa chỉ email hợp lệ.',
   'Sending…': 'Đang gửi…',
   'Something went wrong — please email me directly:': 'Có lỗi xảy ra — bạn hãy gửi email trực tiếp cho tôi:',
+  'The pass board': 'Bảng trên quầy',
+  'Tonight the kitchen is cooking': 'Tối nay bếp đang nấu',
+  'Next up': 'Món kế tiếp',
+  'By the numbers': 'Vài con số',
+  'Opening tables': 'Bàn khai trương',
+  'Reply, at the latest': 'Phản hồi chậm nhất',
+  'Performance target': 'Mục tiêu hiệu năng',
+  'Kitchen open weekly': 'Bếp mở mỗi tuần',
 };
 
 export const DISHES = ['Landing page', 'Marketing website', 'Online store', 'Web app', 'Site rescue', 'Hosting & care', 'Not sure yet'];
@@ -158,6 +166,12 @@ export const TICKET_VI = [
 
 export const BUILD_URL = 'thewebbistro.com/your-new-site';
 
+// Pass-board flip words ("Tonight the kitchen is cooking" section)
+export const FLAP = {
+  en: ['Landing pages', 'Online stores', 'Web apps', 'Site rescues', 'SEO groundwork'],
+  vi: ['Trang đích', 'Cửa hàng trực tuyến', 'Ứng dụng web', 'Cứu hộ website', 'Nền tảng SEO'],
+};
+
 export const COPY = {
   en: { perf: 'Performance', paint: 's first paint', firing: 'Firing…', done: 'Order complete',
         served: 'Served · 0.6s', plating: 'Plating up…', lang: 'Tiếng Việt',
@@ -178,8 +192,9 @@ export const CONTACT = {
 
 // ─── Navigation ─────────────────────────────────────────────────────────────
 // Shared nav model (Header, Footer and page CTAs all render from this) plus
-// hash-routing helpers: #/ , #/menu , #/work , #/book — deep links and the
-// browser back/forward buttons work with no router dependency.
+// path-routing helpers: / , /menu , /work , /book — real URLs, deep links and
+// the browser back/forward buttons work with no router dependency. (Vercel and
+// the Vite dev/preview servers both rewrite every path to index.html.)
 export const PAGES = [
   ['Front of house', 'home'],
   ['The menu', 'menu'],
@@ -187,7 +202,7 @@ export const PAGES = [
   ['Reservations', 'book'],
 ];
 
-export const pageHref = (pg) => (pg === 'home' ? '#/' : `#/${pg}`);
+export const pageHref = (pg) => (pg === 'home' ? '/' : `/${pg}`);
 
 export const PAGE_TITLES = {
   home: 'The Web Bistro',

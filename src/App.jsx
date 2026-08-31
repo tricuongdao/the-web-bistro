@@ -12,10 +12,26 @@ const T_BLOCKS = T_URL + 4;
 const T_METRIC = T_BLOCKS + 32;
 const T_END = T_METRIC + 24 + 34;
 
-// Hash routing: #/ , #/menu , #/work , #/book — deep links and the browser
-// back/forward buttons work with no router dependency.
-const PAGE_OF_HASH = { '': 'home', '#/': 'home', '#/home': 'home', '#/menu': 'menu', '#/work': 'work', '#/book': 'book' };
-const readPage = () => PAGE_OF_HASH[typeof window !== 'undefined' ? window.location.hash : ''] ?? 'home';
+// Path routing: / , /menu , /work , /book — real URLs, deep links and the
+// browser back/forward buttons work with no router dependency. Old #/ links
+// still resolve: they are redirected to the clean path on load.
+const PAGE_OF_PATH = { '/': 'home', '/home': 'home', '/menu': 'menu', '/work': 'work', '/book': 'book' };
+const PATH_OF_PAGE = { home: '/', menu: '/menu', work: '/work', book: '/book' };
+
+const readPage = () => {
+  if (typeof window === 'undefined') return 'home';
+  // Legacy hash URL (e.g. #/menu from an old link) takes priority and is
+  // cleaned up to the matching path.
+  if (window.location.hash) {
+    const hashPage = PAGE_OF_PATH[window.location.hash.replace(/^#/, '').replace(/\/+$/, '') || '/'];
+    if (hashPage) {
+      window.history.replaceState(null, '', PATH_OF_PAGE[hashPage]);
+      return hashPage;
+    }
+  }
+  const path = window.location.pathname.replace(/\/+$/, '') || '/';
+  return PAGE_OF_PATH[path] ?? 'home';
+};
 
 export default function App() {
   const [page, setPage] = useState(readPage);
@@ -45,11 +61,31 @@ export default function App() {
     return () => clearInterval(h);
   }, [page]);
 
-  // Keep `page` in sync when the visitor uses back/forward or a deep link
+  // Keep `page` in sync when the visitor uses back/forward
   useEffect(() => {
-    const onHash = () => setPage(readPage());
-    window.addEventListener('hashchange', onHash);
-    return () => window.removeEventListener('hashchange', onHash);
+    const onPop = () => setPage(readPage());
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
+  }, []);
+
+  // Intercept clicks on internal route links ("/", "/menu", …) and swap the
+  // page via pushState instead of a full document reload. External links,
+  // modified clicks (new tab), and mailto: anchors keep their default behaviour.
+  useEffect(() => {
+    const onClick = (e) => {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const a = e.target.closest('a');
+      if (!a || a.target === '_blank' || a.hasAttribute('download')) return;
+      const href = a.getAttribute('href') ?? '';
+      const path = href.replace(/\/+$/, '') || '/';
+      if (!PAGE_OF_PATH[path]) return;
+      e.preventDefault();
+      if (path === (window.location.pathname.replace(/\/+$/, '') || '/')) return;
+      window.history.pushState(null, '', path);
+      setPage(readPage());
+    };
+    document.addEventListener('click', onClick);
+    return () => document.removeEventListener('click', onClick);
   }, []);
 
   // Kitchen-ticket typewriter (30ms/char, 420ms line pause, 3.4s loop reset, 500ms start delay).
@@ -94,14 +130,19 @@ export default function App() {
     };
   }, []);
 
-  // Scroll-reveal for [data-reveal] nodes, re-run on every page change (as in the design)
+  // Scroll-reveal for [data-reveal] nodes, re-run on every page change (as in the design).
+  // data-reveal="tilt" nodes (the three specials cards) enter rotated and scaled.
   useLayoutEffect(() => {
     document.title = PAGE_TITLES[page] ?? PAGE_TITLES.home;
     window.scrollTo(0, 0);
     const nodes = Array.from(document.querySelectorAll('[data-reveal]'));
+    const from = (n) =>
+      n.getAttribute('data-reveal') === 'tilt'
+        ? 'translateY(30px) rotate(-1.4deg) scale(.975)'
+        : 'translateY(22px)';
     nodes.forEach((n) => {
       n.style.opacity = '0';
-      n.style.transform = 'translateY(22px)';
+      n.style.transform = from(n);
       n.style.transition = 'opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1)';
     });
     const stagger = [];
@@ -133,6 +174,68 @@ export default function App() {
     };
   }, [page]);
 
+  // Page-change sweep: the dark panel with an awning stripe wipes across the
+  // screen on every navigation, as in the design's go() -> sweep().
+  const firstPage = useRef(true);
+  useLayoutEffect(() => {
+    if (firstPage.current) {
+      firstPage.current = false;
+      return;
+    }
+    const el = document.createElement('div');
+    el.style.cssText =
+      'position:fixed; inset:0; z-index:400; pointer-events:none; background:#10322F; transform:translateX(-101%); transition:transform .40s cubic-bezier(.55,0,.2,1);';
+    const stripe = document.createElement('div');
+    stripe.style.cssText =
+      'position:absolute; left:0; right:0; top:0; height:6px; background:repeating-linear-gradient(90deg,#E0A93B 0 28px,#F6EFE2 28px 56px);';
+    el.appendChild(stripe);
+    document.body.appendChild(el);
+    requestAnimationFrame(() => {
+      el.style.transform = 'translateX(0)';
+    });
+    const t1 = setTimeout(() => {
+      el.style.transform = 'translateX(101%)';
+    }, 460);
+    const t2 = setTimeout(() => {
+      if (el.parentNode) el.parentNode.removeChild(el);
+    }, 940);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      if (el.parentNode) el.parentNode.removeChild(el);
+    };
+  }, [page]);
+
+  // Parallax for [data-para] nodes (browser mockup, pass-board glow, cloche scene) —
+  // same math as the design's parallax(): offset scales with distance from viewport centre.
+  useEffect(() => {
+    let raf = 0;
+    let paraNodes = null;
+    const parallax = () => {
+      raf = 0;
+      if (!paraNodes) paraNodes = Array.from(document.querySelectorAll('[data-para]'));
+      const vh = window.innerHeight || 800;
+      paraNodes.forEach((n) => {
+        const r = n.getBoundingClientRect();
+        if (r.bottom < -200 || r.top > vh + 200) return;
+        const d = (r.top + r.height / 2 - vh / 2) / vh;
+        n.style.transform = `translate3d(0, ${(d * parseFloat(n.getAttribute('data-para'))).toFixed(1)}px, 0)`;
+      });
+    };
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(parallax);
+    };
+    parallax();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [page]);
+
   // Derived hero/ticket values (identical math to the design's renderVals)
   const c = COPY[lang];
   const url = BUILD_URL.slice(0, Math.min(t, T_URL));
@@ -161,6 +264,7 @@ export default function App() {
       {page === 'home' && (
         <HomePage
           t={tr}
+          lang={lang}
           url={url}
           o={o}
           score={score}

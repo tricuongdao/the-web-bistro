@@ -42,7 +42,7 @@ const book = renderToString(
 
 const checks = [
   // Home (rendered through App, includes header + footer)
-  ['home: headline', home.includes('Websites, made to order.')],
+  ['home: headline', home.includes('Websites that bring customers in.')],
   ['home: eyebrow', home.includes('Two of three opening tables free')],
   ['home: hero paragraph', home.includes('No page builders, no plugin sprawl')],
   ['home: browser url bar', home.includes('https://') && BUILD_URL.includes('thewebbistro.com')],
