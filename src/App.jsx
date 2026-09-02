@@ -146,21 +146,34 @@ export default function App() {
       n.style.transition = 'opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1)';
     });
     const stagger = [];
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (!e.isIntersecting) return;
-          const i = nodes.indexOf(e.target);
-          stagger.push(setTimeout(() => {
-            e.target.style.opacity = '1';
-            e.target.style.transform = 'none';
-          }, Math.max(0, i % 3) * 90));
-          io.unobserve(e.target);
-        });
-      },
-      { threshold: 0.12, rootMargin: '0px 0px -8% 0px' }
-    );
-    nodes.forEach((n) => io.observe(n));
+    // Feature-detect IntersectionObserver: on browsers without it (very old
+    // Edge/Chrome) constructing one throws and would crash the whole app.
+    let io = null;
+    if (typeof IntersectionObserver !== 'undefined') {
+      io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (!e.isIntersecting) return;
+            const i = nodes.indexOf(e.target);
+            stagger.push(setTimeout(() => {
+              e.target.style.opacity = '1';
+              e.target.style.transform = 'none';
+            }, Math.max(0, i % 3) * 90));
+            io.unobserve(e.target);
+          });
+        },
+        { threshold: 0.12, rootMargin: '0px 0px -8% 0px' }
+      );
+    }
+    if (io) {
+      nodes.forEach((n) => io.observe(n));
+    } else {
+      // No IntersectionObserver: skip the stagger and reveal everything at once.
+      nodes.forEach((n) => {
+        n.style.opacity = '1';
+        n.style.transform = 'none';
+      });
+    }
     const fallback = setTimeout(() => {
       nodes.forEach((n) => {
         n.style.opacity = '1';
@@ -168,7 +181,7 @@ export default function App() {
       });
     }, 1600);
     return () => {
-      io.disconnect();
+      if (io) io.disconnect();
       clearTimeout(fallback);
       stagger.forEach(clearTimeout);
     };
@@ -184,7 +197,7 @@ export default function App() {
     }
     const el = document.createElement('div');
     el.style.cssText =
-      'position:fixed; inset:0; z-index:400; pointer-events:none; background:#10322F; transform:translateX(-101%); transition:transform .40s cubic-bezier(.55,0,.2,1);';
+      'position:fixed; left:0; top:0; right:0; bottom:0; z-index:400; pointer-events:none; background:#10322F; transform:translateX(-101%); transition:transform .40s cubic-bezier(.55,0,.2,1);';
     const stripe = document.createElement('div');
     stripe.style.cssText =
       'position:absolute; left:0; right:0; top:0; height:6px; background:repeating-linear-gradient(90deg,#E0A93B 0 28px,#F6EFE2 28px 56px);';

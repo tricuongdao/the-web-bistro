@@ -179,19 +179,28 @@ export default function HomePage({ t, lang, url, o, score, secs, perfLabel, pain
         }, 1700)
       );
     };
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e, i) => {
-          if (!e.isIntersecting) return;
-          io.unobserve(e.target);
-          timers.push(setTimeout(() => set(e.target), 120 + i * 140));
-        });
-      },
-      { threshold: 0.4 }
-    );
-    nodes.forEach((n) => io.observe(n));
+    // Feature-detect IntersectionObserver so very old browsers fall through to
+    // the settled state instead of crashing the whole page.
+    let io = null;
+    if (typeof IntersectionObserver !== 'undefined') {
+      io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e, i) => {
+            if (!e.isIntersecting) return;
+            io.unobserve(e.target);
+            timers.push(setTimeout(() => set(e.target), 120 + i * 140));
+          });
+        },
+        { threshold: 0.4 }
+      );
+    }
+    if (io) {
+      nodes.forEach((n) => io.observe(n));
+    } else {
+      nodes.forEach(set);
+    }
     return () => {
-      io.disconnect();
+      if (io) io.disconnect();
       timers.forEach(clearTimeout);
     };
   }, []);
