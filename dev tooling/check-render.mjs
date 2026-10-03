@@ -149,6 +149,23 @@ check(
     "(() => { const el = document.querySelector('[data-wb-cursor=\"dot\"]'); if (!el) return false; const r = el.getBoundingClientRect(); return Math.abs(r.x + r.width / 2 - 520) < 8 && Math.abs(r.y + r.height / 2 - 340) < 8; })()",
   )) === true,
 );
+/* leaving the window (taskbar, other app) hides it; coming back must re-show */
+await evalJs("document.documentElement.dispatchEvent(new PointerEvent('pointerleave'))");
+await sleep(600);
+check(
+  'cursor: hides when pointer leaves',
+  (await evalJs(
+    "(() => { const el = document.querySelector('[data-wb-cursor=\"dot\"]'); return !!el && getComputedStyle(el).opacity === '0'; })()",
+  )) === true,
+);
+await evalJs("window.dispatchEvent(new PointerEvent('pointermove', { clientX: 700, clientY: 420, bubbles: true }))");
+await sleep(350);
+check(
+  'cursor: returns after re-entering',
+  (await evalJs(
+    "(() => { const el = document.querySelector('[data-wb-cursor=\"dot\"]'); if (!el) return false; const r = el.getBoundingClientRect(); return getComputedStyle(el).opacity === '1' && Math.abs(r.x + r.width / 2 - 700) < 8 && Math.abs(r.y + r.height / 2 - 420) < 8; })()",
+  )) === true,
+);
 await shot('home-desktop');
 
 /* home (VI) — set the saved language, reload */

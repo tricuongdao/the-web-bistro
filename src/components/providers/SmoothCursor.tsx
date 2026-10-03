@@ -40,24 +40,34 @@ export default function SmoothCursor() {
     let seen = false;
     let raf = 0;
 
+    const show = () => {
+      if (dot.style.opacity !== '1') dot.style.opacity = '1';
+      if (ring.style.opacity !== '1') ring.style.opacity = '1';
+    };
+    const snap = (x: number, y: number) => {
+      px = x;
+      py = y;
+      dx = x;
+      dy = y;
+      rx = x;
+      ry = y;
+      seen = true;
+    };
     const onMove = (e: PointerEvent) => {
       px = e.clientX;
       py = e.clientY;
-      if (!seen) {
-        seen = true;
-        dx = px;
-        dy = py;
-        rx = px;
-        ry = py;
-        dot.style.opacity = '1';
-        ring.style.opacity = '1';
-      }
+      if (!seen) snap(px, py);
+      show();
       const t = e.target as Element | null;
       hot = !!(
         t &&
         typeof t.closest === 'function' &&
         t.closest('a, button, [role="button"], label, input, textarea, select, summary')
       );
+    };
+    const onEnter = (e: PointerEvent) => {
+      snap(e.clientX, e.clientY);
+      show();
     };
     const onDown = () => {
       down = true;
@@ -68,6 +78,9 @@ export default function SmoothCursor() {
     const onLeave = () => {
       dot.style.opacity = '0';
       ring.style.opacity = '0';
+      /* re-arm so the next move snaps straight to the pointer instead of
+         streaking in from the old spot */
+      seen = false;
     };
 
     const tick = () => {
@@ -85,12 +98,14 @@ export default function SmoothCursor() {
     raf = requestAnimationFrame(tick);
 
     window.addEventListener('pointermove', onMove, { passive: true });
+    document.documentElement.addEventListener('pointerenter', onEnter);
     window.addEventListener('pointerdown', onDown, { passive: true });
     window.addEventListener('pointerup', onUp, { passive: true });
     document.documentElement.addEventListener('pointerleave', onLeave);
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener('pointermove', onMove);
+      document.documentElement.removeEventListener('pointerenter', onEnter);
       window.removeEventListener('pointerdown', onDown);
       window.removeEventListener('pointerup', onUp);
       document.documentElement.removeEventListener('pointerleave', onLeave);
