@@ -2,6 +2,9 @@
   "name": "the-web-bistro",
   "private": true,
   "version": "2.0.0",
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
