@@ -18,6 +18,20 @@ import { makeEmberTexture, makeSteamTexture } from './textures';
 
 const damp = THREE.MathUtils.damp;
 
+/** pause the canvas while it is scrolled out of view */
+function useInView<T extends HTMLElement>() {
+  const ref = useRef<T | null>(null);
+  const [inView, setInView] = useState(true);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    const io = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { rootMargin: '140px' });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  return [ref, inView] as const;
+}
+
 type PointerRef = { current: { x: number; y: number } };
 
 function Rig({
@@ -37,9 +51,10 @@ function Rig({
   useFrame((state, delta) => {
     const g = ref.current;
     if (!g) return;
-    g.rotation.y = damp(g.rotation.y, pointer.current.x * 0.14, 3, delta);
-    g.rotation.x = damp(g.rotation.x, -pointer.current.y * 0.07, 3, delta);
-    g.position.x = damp(g.position.x, shift, 3, delta);
+    const dt = Math.min(delta, 1 / 30);
+    g.rotation.y = damp(g.rotation.y, pointer.current.x * 0.14, 3, dt);
+    g.rotation.x = damp(g.rotation.x, -pointer.current.y * 0.07, 3, dt);
+    g.position.x = damp(g.position.x, shift, 3, dt);
   });
   return (
     <group ref={ref} position={[shift, y, 0]} scale={scl}>
@@ -265,15 +280,17 @@ export default function CrestScene() {
   const shift = lowPower ? 0 : 1.02;
   const y = lowPower ? -1.8 : 0.05;
   const scl = lowPower ? 0.62 : 1;
+  const [holder, inView] = useInView<HTMLDivElement>();
 
   return (
-    <Canvas
-      dpr={[1, lowPower ? 1.5 : 1.75]}
-      camera={{ position: [0, 0.1, 6.9], fov: 34 }}
-      gl={{ alpha: true, antialias: true, powerPreference: 'high-performance' }}
-      frameloop={reduced ? 'demand' : 'always'}
-      style={{ width: '100%', height: '100%', pointerEvents: 'none' }}
-    >
+    <div ref={holder} style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+      <Canvas
+        dpr={[1, lowPower ? 1.5 : 1.75]}
+        camera={{ position: [0, 0.1, 6.9], fov: 34 }}
+        gl={{ alpha: true, antialias: true, powerPreference: 'high-performance' }}
+        frameloop={reduced ? 'demand' : inView ? 'always' : 'never'}
+        style={{ width: '100%', height: '100%', pointerEvents: 'none' }}
+      >
       <Suspense fallback={null}>
         <ambientLight intensity={0.45} color="#f7f1e6" />
         <spotLight position={[4.5, 6, 4.5]} angle={0.55} penumbra={1} intensity={150} color="#ffd9a0" decay={2} distance={32} />
@@ -293,6 +310,7 @@ export default function CrestScene() {
           <Lightformer intensity={1.2} color="#f7f1e6" position={[0, 0.5, 6]} scale={[10, 4, 1]} />
         </Environment>
       </Suspense>
-    </Canvas>
+      </Canvas>
+    </div>
   );
 }

@@ -26,14 +26,29 @@ const TICKET_SPOTS: [x: number, y: number, z: number, rotZ: number, scale: numbe
 
 const damp = THREE.MathUtils.damp;
 
+/** pause the canvas while it is scrolled out of view */
+function useInView<T extends HTMLElement>() {
+  const ref = useRef<T | null>(null);
+  const [inView, setInView] = useState(true);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    const io = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { rootMargin: '140px' });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  return [ref, inView] as const;
+}
+
 function Rig({ children }: { children: React.ReactNode }) {
   const ref = useRef<THREE.Group>(null);
   useFrame((state, delta) => {
     const g = ref.current;
     if (!g) return;
-    g.rotation.y = damp(g.rotation.y, state.pointer.x * 0.22, 3, delta);
-    g.rotation.x = damp(g.rotation.x, -state.pointer.y * 0.1, 3, delta);
-    g.position.y = 0.55 + damp(g.position.y - 0.55, state.pointer.y * 0.08, 3, delta);
+    const dt = Math.min(delta, 1 / 30);
+    g.rotation.y = damp(g.rotation.y, state.pointer.x * 0.22, 3, dt);
+    g.rotation.x = damp(g.rotation.x, -state.pointer.y * 0.1, 3, dt);
+    g.position.y = 0.55 + damp(g.position.y - 0.55, state.pointer.y * 0.08, 3, dt);
   });
   return (
     <group ref={ref} position={[0, 0.55, 0]}>
@@ -42,7 +57,7 @@ function Rig({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Cloche({ reduced, lowPower }: { reduced: boolean; lowPower: boolean }) {
+function Cloche({ reduced, lowPower, active }: { reduced: boolean; lowPower: boolean; active: boolean }) {
   const lift = useRef(0);
   const groupRef = useRef<THREE.Group>(null);
   const glowRef = useRef<THREE.PointLight>(null);
@@ -53,24 +68,28 @@ function Cloche({ reduced, lowPower }: { reduced: boolean; lowPower: boolean }) 
   const siteCardTex = useMemo(() => makeSiteCardTexture(BUILD_URL), []);
 
   useEffect(() => {
-    if (reduced) return;
+    if (reduced || !active) return;
     const open = () => {
+      if (document.hidden) return;
       setAutoOpen(true);
       window.setTimeout(() => setAutoOpen(false), 3400);
     };
-    const kick = window.setTimeout(open, 2800);
+    /* first opening shortly after the board scrolls into view, then the
+       kitchen's own rhythm */
+    const kick = window.setTimeout(open, 1600);
     const iv = window.setInterval(open, 11500);
     return () => {
       window.clearTimeout(kick);
       window.clearInterval(iv);
     };
-  }, [reduced]);
+  }, [reduced, active]);
 
   useFrame((state, delta) => {
     const g = groupRef.current;
     if (!g) return;
+    const dt = Math.min(delta, 1 / 30);
     const target = autoOpen ? 1 : hovered ? 0.55 : 0;
-    lift.current = damp(lift.current, target, 3.2, delta);
+    lift.current = damp(lift.current, target, 2.6, dt);
     const L = lift.current;
 
     const bob = reduced ? 0 : Math.sin(state.clock.elapsedTime * 1.1) * 0.045 * (1 - L);
@@ -92,15 +111,21 @@ function Cloche({ reduced, lowPower }: { reduced: boolean; lowPower: boolean }) 
 
   return (
     <group>
-      <group
-        ref={groupRef}
-        position={[0, -1.15, 0]}
+      {/* static hover zone: the lid animates under the pointer without the
+          raycast chasing it (a moving hit-target oscillated between open
+          and closed and read as a twitch) */}
+      <mesh
+        position={[0, -0.1, 0.15]}
         onPointerOver={(e: ThreeEvent<PointerEvent>) => {
           e.stopPropagation();
           setHovered(true);
         }}
         onPointerOut={() => setHovered(false)}
       >
+        <cylinderGeometry args={[1.35, 1.35, 2.9, 16, 1, true]} />
+        <meshBasicMaterial visible={false} />
+      </mesh>
+      <group ref={groupRef} position={[0, -1.15, 0]}>
         {/* dome */}
         <mesh>
           <sphereGeometry args={[1.02, 48, 32, 0, Math.PI * 2, 0, Math.PI / 2]} />
@@ -239,6 +264,7 @@ export default function PlateScene() {
   const { lang } = useLang();
   const [lowPower, setLowPower] = useState(false);
   const [reduced, setReduced] = useState(false);
+  const [holder, inView] = useInView<HTMLDivElement>();
 
   useEffect(() => {
     setLowPower(window.matchMedia('(max-width: 900px)').matches);
@@ -246,13 +272,14 @@ export default function PlateScene() {
   }, []);
 
   return (
-    <Canvas
-      dpr={[1, lowPower ? 1.5 : 1.75]}
-      camera={{ position: [0, 0.3, 6.8], fov: 34 }}
-      gl={{ alpha: true, antialias: true, powerPreference: 'high-performance' }}
-      frameloop={reduced ? 'demand' : 'always'}
-      style={{ position: 'absolute', inset: 0 }}
-    >
+    <div ref={holder} style={{ position: 'absolute', inset: 0 }}>
+      <Canvas
+        dpr={[1, lowPower ? 1.5 : 1.75]}
+        camera={{ position: [0, 0.3, 6.8], fov: 34 }}
+        gl={{ alpha: true, antialias: true, powerPreference: 'high-performance' }}
+        frameloop={reduced ? 'demand' : inView ? 'always' : 'never'}
+        style={{ position: 'absolute', inset: 0 }}
+      >
       <Suspense fallback={null}>
         <ambientLight intensity={0.5} color="#f7f1e6" />
         <spotLight position={[4.5, 6, 4.5]} angle={0.55} penumbra={1} intensity={140} color="#ffd9a0" decay={2} distance={30} />
@@ -260,7 +287,7 @@ export default function PlateScene() {
         <pointLight position={[0, -0.6, -4]} intensity={5} color="#3a2a1c" distance={12} />
 
         <Rig>
-          <Cloche reduced={reduced} lowPower={lowPower} />
+          <Cloche reduced={reduced} lowPower={lowPower} active={inView} />
           <Tickets lang={lang} count={lowPower ? 3 : 5} reduced={reduced} />
           <Steam count={lowPower ? 6 : 10} reduced={reduced} />
         </Rig>
@@ -271,6 +298,7 @@ export default function PlateScene() {
           <Lightformer intensity={1.0} color="#7d93a0" position={[-6, 1, -1]} scale={[12, 6, 1]} rotation-y={Math.PI / 2} />
         </Environment>
       </Suspense>
-    </Canvas>
+      </Canvas>
+    </div>
   );
 }
