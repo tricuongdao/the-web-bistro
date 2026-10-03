@@ -82,6 +82,10 @@ npm run check:render   # needs a server on :3000 — drives headless Edge via
 node "dev tooling/capture.mjs" / home   # scroll-through screenshots
 ```
 
+If a screenshot script exits with `stdin is not a tty`, a stray headless Edge
+from an earlier run is holding its CDP port: kill any `msedge` processes
+started with `--user-data-dir=*wb-cdp*`, then rerun.
+
 ## Deploying (Vercel)
 
 - `vercel.json` declares `"framework": "nextjs"`.
@@ -101,7 +105,7 @@ src/
     scene/        CrestScene, PlateScene, glyphs, canvas textures
     layout/       header pill, footer, boot loader, route sweep
     ui/           wordmark, reveals, marquee, split-flap, dials, ticket
-    providers/    language, smooth scroll, sweep
+    providers/    language, smooth scroll, sweep, cursor
     menu/ work/ book/ legal/   page bodies
   lib/            content.ts (copy & data), i18n.ts (translations)
 ```

@@ -11,7 +11,7 @@ import Link from 'next/link';
 import { Component, type ReactNode } from 'react';
 import { motion } from 'motion/react';
 import { useLang } from '@/components/providers/LangProvider';
-import { CONTACT, PRICES } from '@/lib/content';
+import { CONTACT } from '@/lib/content';
 import styles from './home.module.css';
 
 const CrestScene = dynamic(() => import('@/components/scene/CrestScene'), {
@@ -38,7 +38,7 @@ const blurIn = (delay: number) => ({
 });
 
 export default function Hero() {
-  const { t, c } = useLang();
+  const { t } = useLang();
   return (
     <section className={styles.hero}>
       <div className={styles.heroBg} aria-hidden="true" />
@@ -74,21 +74,6 @@ export default function Hero() {
             <span className={styles.replyCaret}>_</span>
           </motion.div>
         </div>
-      </div>
-      <div className={styles.chips} aria-hidden="true">
-        <motion.div className={`${styles.chip} ${styles.chipA}`} {...blurIn(0.9)}>
-          <span className={styles.chipLabel}>{t('Order #0142')}</span>
-          <span className={styles.chipValue}>
-            <span className={styles.chipDot} />
-            {c.firing}
-          </span>
-        </motion.div>
-        <motion.div className={`${styles.chip} ${styles.chipC}`} {...blurIn(1.2)}>
-          <span className={styles.chipLabel}>{t('Landing Page')}</span>
-          <span className={styles.chipValue}>
-            {t('From')} {PRICES.landing}
-          </span>
-        </motion.div>
       </div>
     </section>
   );

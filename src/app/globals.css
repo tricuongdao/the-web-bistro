@@ -376,6 +376,12 @@ p {
   to { transform: scaleX(1); }
 }
 
+/* Smooth cursor: hide the native pointer only while it is live */
+.wb-cursor-on,
+.wb-cursor-on * {
+  cursor: none !important;
+}
+
 /* Respect visitors who ask for less motion */
 @media (prefers-reduced-motion: reduce) {
   *,

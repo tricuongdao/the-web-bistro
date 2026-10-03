@@ -4,6 +4,7 @@ import './globals.css';
 import { LangProvider } from '@/components/providers/LangProvider';
 import SmoothScroll from '@/components/providers/SmoothScroll';
 import RouteSweep from '@/components/providers/RouteSweep';
+import SmoothCursor from '@/components/providers/SmoothCursor';
 import BootLoader from '@/components/layout/BootLoader';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -87,6 +88,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <SmoothScroll>
             <Header />
             <RouteSweep />
+            <SmoothCursor />
             {children}
             <Footer />
           </SmoothScroll>

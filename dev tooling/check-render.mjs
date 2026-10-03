@@ -133,6 +133,22 @@ check('home: FAQ', has('Fair questions, straight answers.') && has('Will I rank 
 check('home: closing CTA', has('Hungry? Tell me what you need.') && has('Book a table'));
 check('home: canvas mounted', (await evalJs("!!document.querySelector('canvas')")) === true);
 check('home: no em dashes', !(await evalJs(`document.body.innerText.includes('\\u2014')`)));
+
+/* custom smooth cursor: mounts on fine pointers and follows the pointer */
+check(
+  'cursor: custom cursor mounts',
+  (await evalJs(
+    "!!document.querySelector('[data-wb-cursor=\"dot\"]') && !!document.querySelector('[data-wb-cursor=\"ring\"]')",
+  )) === true,
+);
+await evalJs("window.dispatchEvent(new PointerEvent('pointermove', { clientX: 520, clientY: 340, bubbles: true }))");
+await sleep(350);
+check(
+  'cursor: dot follows pointer',
+  (await evalJs(
+    "(() => { const el = document.querySelector('[data-wb-cursor=\"dot\"]'); if (!el) return false; const r = el.getBoundingClientRect(); return Math.abs(r.x + r.width / 2 - 520) < 8 && Math.abs(r.y + r.height / 2 - 340) < 8; })()",
+  )) === true,
+);
 await shot('home-desktop');
 
 /* home (VI) — set the saved language, reload */
