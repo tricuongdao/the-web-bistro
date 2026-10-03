@@ -16,8 +16,8 @@ export default function Specials() {
     <section className={`container ${styles.specials}`}>
       <div className={styles.specialsHead}>
         <Reveal>
-          <div className={styles.eyebrow}>
-            <span className={styles.eyebrowRule} />
+          <div className={styles.tag}>
+            <span className={styles.tagDot} />
             {t("Today's specials")}
           </div>
           <h2 className={styles.specialsTitle}>{t('Three things I cook most')}</h2>
@@ -31,17 +31,17 @@ export default function Specials() {
           <Reveal
             key={s.title}
             delay={i * 0.08}
-            className={`${styles.specialCard}${s.dark ? ` ${styles.specialCardDark}` : ''}`}
+            className={`${styles.specialCard}${s.dark ? ` ${styles.specialCardHot}` : ''}`}
           >
-            <span className={`${styles.specialKicker}${s.dark ? ` ${styles.specialKickerDark}` : ''}`}>
+            <span className={`${styles.specialKicker}${s.dark ? ` ${styles.specialKickerHot}` : ''}`}>
               {t(s.kicker)}
             </span>
-            <h3 className={`${styles.specialTitle}${s.dark ? ` ${styles.specialTitleDark}` : ''}`}>{t(s.title)}</h3>
-            <p className={`${styles.specialBody}${s.dark ? ` ${styles.specialBodyDark}` : ''}`}>{t(s.body)}</p>
+            <h3 className={styles.specialTitle}>{t(s.title)}</h3>
+            <p className={styles.specialBody}>{t(s.body)}</p>
             <div className={styles.specialFoot}>
-              <span className={`${styles.specialMeta}${s.dark ? ` ${styles.specialMetaDark}` : ''}`}>{t(s.meta)}</span>
+              <span className={styles.specialMeta}>{t(s.meta)}</span>
               {s.from ? (
-                <span className={`${styles.specialPrice}${s.dark ? ` ${styles.specialPriceDark}` : ''}`}>
+                <span className={styles.specialPrice}>
                   {t('From')} {s.from}
                   {s.per ? ` ${t('/ month')}` : ''}
                 </span>

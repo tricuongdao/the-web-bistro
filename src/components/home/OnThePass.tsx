@@ -1,9 +1,9 @@
 'use client';
 
 /*
- * On the pass: the four-station story. Header row with the typing order
- * ticket on the right; below, the stations pan sideways as you scroll
- * (pinned on desktop, a plain list on mobile / reduced motion).
+ * On the pass: the four-station story. Intro + the typing order ticket,
+ * then the stations pan sideways as you scroll (pinned on desktop, a
+ * plain list on mobile / reduced motion).
  */
 
 import { useEffect, useRef } from 'react';
@@ -67,7 +67,6 @@ export default function OnThePass() {
           )
         : null;
 
-      // Fonts change the track width; re-measure once they load.
       if (document.fonts && document.fonts.ready) {
         document.fonts.ready.then(() => ScrollTrigger.refresh());
       }
@@ -85,11 +84,12 @@ export default function OnThePass() {
 
   return (
     <section className={styles.pass} id="process">
+      <div className={styles.passGlow} aria-hidden="true" />
       <div className={`container ${styles.passInner}`}>
         <div className={styles.passGrid}>
           <Reveal className={styles.passCopy}>
-            <div className={styles.eyebrow}>
-              <span className={styles.eyebrowRule} />
+            <div className={styles.tag}>
+              <span className={styles.tagDot} />
               {t('On the pass')}
             </div>
             <h2 className={styles.passTitle}>{t('Every job leaves the kitchen the same way.')}</h2>
@@ -98,7 +98,7 @@ export default function OnThePass() {
                 'Brief in, ticket up, built, served. Ask me on a Tuesday what happened on Monday and you get a straight answer, not a status page.',
               )}
             </p>
-            <Link href="/book" className="btn btn-ghost-dark">
+            <Link href="/book" className="btn btn-glass">
               {t('Put a ticket in')}
             </Link>
           </Reveal>

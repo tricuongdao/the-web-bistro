@@ -5,7 +5,7 @@
  */
 
 import Link from 'next/link';
-import AwningMark from '@/components/ui/AwningMark';
+import Wordmark from '@/components/ui/Wordmark';
 import { useLang } from '@/components/providers/LangProvider';
 import { CONTACT, NAV } from '@/lib/content';
 import styles from './layout.module.css';
@@ -14,9 +14,10 @@ export default function Footer() {
   const { t } = useLang();
   return (
     <footer className={styles.footer}>
+      <div className={styles.footerGlow} aria-hidden="true" />
       <div className={`container ${styles.footerInner}`}>
         <div className={styles.footBrand}>
-          <AwningMark size={56} />
+          <Wordmark disc size="md" />
           <span className={styles.footBrandCol}>
             <span className={styles.footName}>The Web Bistro</span>
             <span className={styles.footTag}>{t('Web development')}</span>

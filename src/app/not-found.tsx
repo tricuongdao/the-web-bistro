@@ -6,23 +6,23 @@
 
 import Link from 'next/link';
 import { useLang } from '@/components/providers/LangProvider';
-import AwningMark from '@/components/ui/AwningMark';
+import Wordmark from '@/components/ui/Wordmark';
 import styles from '@/components/pages.module.css';
 
 export default function NotFound() {
   const { t } = useLang();
   return (
     <main id="content" className={styles.notFound}>
-      <AwningMark size={92} variant="icon" stripeA="#E0A93B" stripeB="#F6EFE2" trim="#10322F" />
+      <Wordmark size="xl" />
       <h1 className={styles.nfTitle}>{t("This table's not set.")}</h1>
       <p className={styles.nfBody}>
         {t('The page you asked for is not on the menu. It may have moved, or it may never have existed.')}
       </p>
       <div className={styles.nfCtas}>
-        <Link href="/" className="btn btn-solid">
+        <Link href="/" className="btn btn-ember">
           {t('Front of house')}
         </Link>
-        <Link href="/menu" className="btn btn-ghost">
+        <Link href="/menu" className="btn btn-glass">
           {t('The menu')}
         </Link>
       </div>

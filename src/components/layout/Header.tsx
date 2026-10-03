@@ -1,9 +1,9 @@
 'use client';
 
 /*
- * Sticky header: awning stripe across the top area, brand block, nav,
- * language toggle, and the "Email me" doorbell. The stripe doubles as the
- * scroll progress bar.
+ * Floating glass header: a pill that hovers over the page (nav, language
+ * toggle, the "Email me" doorbell), with a copper scroll-progress line
+ * pinned to the top of the viewport.
  */
 
 import { useEffect, useRef } from 'react';
@@ -11,7 +11,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import AwningMark from '@/components/ui/AwningMark';
+import Wordmark from '@/components/ui/Wordmark';
 import { useLang } from '@/components/providers/LangProvider';
 import { CONTACT, NAV } from '@/lib/content';
 import styles from './layout.module.css';
@@ -26,12 +26,12 @@ export default function Header() {
   useEffect(() => {
     const bar = progRef.current;
     if (!bar) return;
-    bar.style.width = '0%';
+    bar.style.transform = 'scaleX(0)';
     const st = ScrollTrigger.create({
       start: 0,
       end: () => ScrollTrigger.maxScroll(window),
       onUpdate: (self) => {
-        bar.style.width = `${(self.progress * 100).toFixed(2)}%`;
+        bar.style.transform = `scaleX(${self.progress.toFixed(4)})`;
       },
     });
     return () => st.kill();
@@ -45,37 +45,37 @@ export default function Header() {
       <a href="#content" className="skip-link">
         {t('Skip to content')}
       </a>
+      <div ref={progRef} className={styles.progress} aria-hidden="true" />
       <header className={styles.header}>
-      <div className={`container ${styles.headerInner}`}>
-        <Link href="/" className={styles.brand}>
-          <AwningMark size={42} variant="icon" />
-          <span className={styles.brandCol}>
-            <span className={styles.brandName}>The Web Bistro</span>
-            <span className={styles.brandTag}>{t('Web development')}</span>
-          </span>
-        </Link>
-        <nav className={styles.nav} aria-label="Main">
-          {NAV.map(([label, href]) => (
-            <Link
-              key={href}
-              href={href}
-              className={`${styles.navLink}${isActive(href) ? ` ${styles.navLinkActive}` : ''}`}
-              aria-current={isActive(href) ? 'page' : undefined}
-            >
-              {t(label)}
+        <div className={`container ${styles.headerInner}`}>
+          <div className={styles.pill}>
+            <Link href="/" className={styles.brand}>
+              <Wordmark disc size="sm" />
+              <span className={styles.brandCol}>
+                <span className={styles.brandName}>The Web Bistro</span>
+                <span className={styles.brandTag}>{t('Web development')}</span>
+              </span>
             </Link>
-          ))}
-          <button type="button" className={styles.langBtn} onClick={toggle}>
-            {c.lang}
-          </button>
-          <a className={styles.emailBtn} href={`mailto:${CONTACT.email}`}>
-            {t('Email me')}
-          </a>
-        </nav>
-      </div>
-      <div className={styles.stripe}>
-        <div ref={progRef} className={styles.progress} />
-      </div>
+            <nav className={styles.nav} aria-label="Main">
+              {NAV.map(([label, href]) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className={`${styles.navLink}${isActive(href) ? ` ${styles.navLinkActive}` : ''}`}
+                  aria-current={isActive(href) ? 'page' : undefined}
+                >
+                  {t(label)}
+                </Link>
+              ))}
+              <button type="button" className={styles.langBtn} onClick={toggle}>
+                {c.lang}
+              </button>
+              <a className={styles.emailBtn} href={`mailto:${CONTACT.email}`}>
+                {t('Email me')}
+              </a>
+            </nav>
+          </div>
+        </div>
       </header>
     </>
   );

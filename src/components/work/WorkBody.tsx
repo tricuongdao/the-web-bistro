@@ -69,7 +69,7 @@ export default function WorkBody() {
 
       <Reveal className={styles.workCta}>
         <span className={styles.workCtaLine}>{t('Want one of the three?')}</span>
-        <Link href="/book" className="btn btn-solid">
+        <Link href="/book" className="btn btn-ember">
           {t('Claim a table')}
         </Link>
       </Reveal>

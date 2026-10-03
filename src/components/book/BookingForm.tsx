@@ -9,8 +9,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useLang } from '@/components/providers/LangProvider';
-import AwningMark from '@/components/ui/AwningMark';
 import { CONTACT, DISHES, DISHES_VI, FORM_ENDPOINT } from '@/lib/content';
+import Wordmark from '@/components/ui/Wordmark';
 import styles from '../pages.module.css';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -99,7 +99,7 @@ export default function BookingForm() {
     <div className={styles.formCard}>
       {sent ? (
         <div className={styles.sentBox}>
-          <AwningMark size={72} variant="icon" stripeB="#10322F" trim="#10322F" />
+          <Wordmark size="xl" />
           <h2 className={styles.sentTitle}>{t("Table's booked.")}</h2>
           <p className={styles.sentBody}>{t('Thanks. I have your details and I will reply within a day.')}</p>
           <button type="button" className={`btn-link ${styles.sentAgain}`} onClick={reset}>
@@ -194,7 +194,7 @@ export default function BookingForm() {
               ) : null}
             </div>
           ) : null}
-          <button type="submit" className={`btn btn-solid ${styles.submit}`} disabled={busy}>
+          <button type="submit" className={`btn btn-ember ${styles.submit}`} disabled={busy}>
             {busy ? t('Sending…') : t('Send the order')}
           </button>
           <p className={styles.formFoot}>

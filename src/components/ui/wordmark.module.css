@@ -1,0 +1,47 @@
+.mark {
+  display: inline-flex;
+  align-items: baseline;
+  font-family: var(--serif);
+  color: var(--cream);
+  line-height: 1;
+  letter-spacing: 0.5px;
+  user-select: none;
+}
+
+.semi {
+  color: var(--copper);
+  font-size: 0.72em;
+  margin-left: 0.06em;
+}
+
+.sm {
+  font-size: 20px;
+}
+
+.md {
+  font-size: 27px;
+}
+
+.lg {
+  font-size: 40px;
+}
+
+.xl {
+  font-size: 64px;
+}
+
+/* The brass plate disc — the mark served on a plate */
+.disc {
+  align-items: center;
+  justify-content: center;
+  width: 2.1em;
+  height: 2.1em;
+  padding-bottom: 0.07em;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 26%, #2c1d12, #14100b 72%);
+  border: 1px solid rgba(217, 142, 74, 0.42);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    inset 0 -6px 14px rgba(0, 0, 0, 0.5),
+    0 10px 26px -12px rgba(217, 142, 74, 0.45);
+}

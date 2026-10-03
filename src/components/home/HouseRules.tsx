@@ -16,8 +16,8 @@ export default function HouseRules() {
     <section className={styles.rules}>
       <div className={`container ${styles.rulesInner}`}>
         <Reveal className={styles.rulesHead}>
-          <div className={styles.eyebrow}>
-            <span className={styles.eyebrowRule} />
+          <div className={styles.tag}>
+            <span className={styles.tagDot} />
             {t('House rules')}
           </div>
           <h2 className={styles.rulesTitle}>{t('What you get, in writing')}</h2>

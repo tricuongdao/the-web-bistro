@@ -42,7 +42,7 @@ const edge = spawn(
     '--headless=new',
     '--remote-debugging-port=' + PORT,
     '--no-first-run',
-    '--user-data-dir=' + join(process.env.TEMP || '.', 'wb-cdp-cap'),
+    '--user-data-dir=' + join(process.env.TEMP || '.', 'wb-cdp-cap-' + process.pid),
     'about:blank',
   ],
   { stdio: 'ignore' },

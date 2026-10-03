@@ -27,6 +27,7 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@types/three": "^0.186.0",
+    "opentype.js": "^2.0.0",
     "oxlint": "^1.86.0",
     "typescript": "^7.0.2"
   }

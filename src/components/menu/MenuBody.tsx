@@ -87,7 +87,7 @@ export default function MenuBody() {
 
       <Reveal className={styles.menuCta}>
         <span className={styles.menuCtaLine}>{t('Nothing here quite fits?')}</span>
-        <Link href="/book" className="btn btn-solid">
+        <Link href="/book" className="btn btn-ember">
           {t('Ask the kitchen')}
         </Link>
       </Reveal>

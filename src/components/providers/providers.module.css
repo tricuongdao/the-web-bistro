@@ -3,7 +3,7 @@
   inset: 0;
   z-index: var(--z-sweep);
   pointer-events: none;
-  background: var(--ink);
+  background: #0b0906;
   display: none;
 }
 
@@ -12,6 +12,6 @@
   left: 0;
   right: 0;
   top: 0;
-  height: 6px;
-  background: repeating-linear-gradient(90deg, #e0a93b 0 28px, #f6efe2 28px 56px);
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #d98e4a 30%, #ffcf95 50%, #d98e4a 70%, transparent);
 }

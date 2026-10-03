@@ -1,14 +1,10 @@
 'use client';
 
 /*
- * The hero scene — the pass at night.
- *
- * A brass cloche on a plate. Order tickets drift around it. Steam rises
- * from the rim. Take the lid off (hover, or wait for the kitchen's own
- * rhythm) and the site being served is revealed underneath: a little
- * browser card, warm from the heat lamp.
- *
- * Everything is primitives and canvas-painted textures: no downloads.
+ * The plate scene — a brass cloche on a plate. Order tickets drift around
+ * it. Take the lid off (hover, or wait for the kitchen's own rhythm) and
+ * the site being served is revealed underneath: a little browser card,
+ * warm from the heat lamp.
  */
 
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
@@ -113,12 +109,12 @@ function Cloche({ reduced, lowPower }: { reduced: boolean; lowPower: boolean }) 
         {/* base band */}
         <mesh position={[0, 0.015, 0]} rotation={[Math.PI / 2, 0, 0]}>
           <torusGeometry args={[1.02, 0.045, 16, 72]} />
-          <meshStandardMaterial color="#b07c1f" metalness={1} roughness={0.3} />
+          <meshStandardMaterial color="#b87333" metalness={1} roughness={0.3} />
         </mesh>
         {/* knob */}
         <mesh position={[0, 1.1, 0]}>
           <cylinderGeometry args={[0.05, 0.065, 0.16, 16]} />
-          <meshStandardMaterial color="#b07c1f" metalness={1} roughness={0.3} />
+          <meshStandardMaterial color="#b87333" metalness={1} roughness={0.3} />
         </mesh>
         <mesh position={[0, 1.22, 0]}>
           <sphereGeometry args={[0.105, 24, 16]} />
@@ -130,11 +126,11 @@ function Cloche({ reduced, lowPower }: { reduced: boolean; lowPower: boolean }) 
       <group position={[0, -1.2, 0]}>
         <mesh>
           <cylinderGeometry args={[1.12, 0.98, 0.09, 64]} />
-          <meshStandardMaterial color="#f2e9d8" roughness={0.42} metalness={0.04} />
+          <meshStandardMaterial color="#1d1613" roughness={0.4} metalness={0.3} />
         </mesh>
         <mesh position={[0, 0.055, 0]} rotation={[Math.PI / 2, 0, 0]}>
           <torusGeometry args={[1.04, 0.05, 14, 72]} />
-          <meshStandardMaterial color="#b07c1f" metalness={1} roughness={0.35} />
+          <meshStandardMaterial color="#c98a4b" metalness={1} roughness={0.32} />
         </mesh>
       </group>
 
@@ -145,7 +141,7 @@ function Cloche({ reduced, lowPower }: { reduced: boolean; lowPower: boolean }) 
         <meshBasicMaterial map={siteCardTex} transparent opacity={0} toneMapped={false} side={THREE.DoubleSide} />
       </mesh>
 
-      <ContactShadows position={[0, -1.28, 0]} opacity={0.55} scale={6.2} blur={2.6} far={2.4} color="#02100c" />
+      <ContactShadows position={[0, -1.28, 0]} opacity={0.55} scale={6.2} blur={2.6} far={2.4} color="#000000" />
     </group>
   );
 }
@@ -239,7 +235,7 @@ function Steam({ count, reduced }: { count: number; reduced: boolean }) {
   );
 }
 
-export default function HeroScene() {
+export default function PlateScene() {
   const { lang } = useLang();
   const [lowPower, setLowPower] = useState(false);
   const [reduced, setReduced] = useState(false);
@@ -255,13 +251,13 @@ export default function HeroScene() {
       camera={{ position: [0, 0.3, 6.8], fov: 34 }}
       gl={{ alpha: true, antialias: true, powerPreference: 'high-performance' }}
       frameloop={reduced ? 'demand' : 'always'}
-      style={{ width: '100%', height: '100%' }}
+      style={{ position: 'absolute', inset: 0 }}
     >
       <Suspense fallback={null}>
-        <ambientLight intensity={0.55} color="#f6efe2" />
+        <ambientLight intensity={0.5} color="#f7f1e6" />
         <spotLight position={[4.5, 6, 4.5]} angle={0.55} penumbra={1} intensity={140} color="#ffd9a0" decay={2} distance={30} />
-        <directionalLight position={[-4.5, 2.5, -4]} intensity={0.65} color="#9fc0ac" />
-        <pointLight position={[0, -0.6, -4]} intensity={5} color="#3c5a50" distance={12} />
+        <directionalLight position={[-4.5, 2.5, -4]} intensity={0.6} color="#9fb6c0" />
+        <pointLight position={[0, -0.6, -4]} intensity={5} color="#3a2a1c" distance={12} />
 
         <Rig>
           <Cloche reduced={reduced} lowPower={lowPower} />
@@ -271,8 +267,8 @@ export default function HeroScene() {
 
         <Environment resolution={256} frames={1}>
           <Lightformer intensity={3.2} color="#ffd9a0" position={[0, 5, 0]} scale={[12, 12, 1]} rotation-x={Math.PI / 2} />
-          <Lightformer intensity={1.1} color="#7ba58f" position={[-6, 1, 0]} scale={[14, 6, 1]} rotation-y={Math.PI / 2} />
-          <Lightformer intensity={1.4} color="#e0a93b" position={[5, 2, 2]} scale={[8, 8, 1]} rotation-y={-Math.PI / 2} />
+          <Lightformer intensity={1.2} color="#e2603a" position={[6, 1.5, 2]} scale={[9, 9, 1]} rotation-y={-Math.PI / 2} />
+          <Lightformer intensity={1.0} color="#7d93a0" position={[-6, 1, -1]} scale={[12, 6, 1]} rotation-y={Math.PI / 2} />
         </Environment>
       </Suspense>
     </Canvas>

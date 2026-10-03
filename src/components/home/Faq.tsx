@@ -14,8 +14,8 @@ export default function Faq() {
   return (
     <section className={`container ${styles.faq}`} id="questions">
       <Reveal className={styles.faqHead}>
-        <div className={styles.eyebrow}>
-          <span className={styles.eyebrowRule} />
+        <div className={styles.tag}>
+          <span className={styles.tagDot} />
           {t('Ask the kitchen')}
         </div>
         <h2 className={styles.faqTitle}>{t('Fair questions, straight answers.')}</h2>

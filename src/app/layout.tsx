@@ -1,20 +1,23 @@
 import type { Metadata, Viewport } from 'next';
-import { Bodoni_Moda, IBM_Plex_Mono, Noto_Serif_Display } from 'next/font/google';
+import { DM_Serif_Display, JetBrains_Mono, Manrope, Noto_Serif_Display } from 'next/font/google';
 import './globals.css';
 import { LangProvider } from '@/components/providers/LangProvider';
 import SmoothScroll from '@/components/providers/SmoothScroll';
 import RouteSweep from '@/components/providers/RouteSweep';
+import BootLoader from '@/components/layout/BootLoader';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 
-/* Display serif (EN). Vietnamese swaps to Noto Serif Display via .lang-vi. */
-const bodoni = Bodoni_Moda({
+/* Display serif (EN) — also the source of the 3D crest glyphs. */
+const dmSerif = DM_Serif_Display({
   subsets: ['latin', 'latin-ext'],
+  weight: '400',
   style: ['normal', 'italic'],
   display: 'swap',
-  variable: '--font-bodoni',
+  variable: '--font-dm-serif',
 });
 
+/* Vietnamese swaps to Noto Serif Display via .lang-vi */
 const notoSerif = Noto_Serif_Display({
   subsets: ['latin', 'latin-ext', 'vietnamese'],
   style: ['normal', 'italic'],
@@ -22,12 +25,18 @@ const notoSerif = Noto_Serif_Display({
   variable: '--font-noto-serif',
 });
 
-/* Everything else. */
-const plexMono = IBM_Plex_Mono({
+/* Body */
+const manrope = Manrope({
   subsets: ['latin', 'latin-ext', 'vietnamese'],
-  weight: ['400', '500', '600', '700'],
   display: 'swap',
-  variable: '--font-plex-mono',
+  variable: '--font-manrope',
+});
+
+/* Tickets, labels, numbers */
+const jetbrains = JetBrains_Mono({
+  subsets: ['latin', 'latin-ext', 'vietnamese'],
+  display: 'swap',
+  variable: '--font-jetbrains',
 });
 
 export const metadata: Metadata = {
@@ -43,11 +52,11 @@ export const metadata: Metadata = {
     description: 'Websites that bring customers in. Landing pages, online stores and web apps, built and served by one chef.',
     type: 'website',
   },
-  icons: { icon: '/favicon.png' },
+  icons: { icon: '/icon.svg' },
 };
 
 export const viewport: Viewport = {
-  themeColor: '#10322F',
+  themeColor: '#0A0806',
 };
 
 /* Pre-paint the saved language before hydration so VI visitors get the
@@ -66,9 +75,14 @@ const JSON_LD = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${bodoni.variable} ${notoSerif.variable} ${plexMono.variable}`}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${dmSerif.variable} ${notoSerif.variable} ${manrope.variable} ${jetbrains.variable}`}
+    >
       <body>
         <script dangerouslySetInnerHTML={{ __html: LANGUAGE_BOOT }} />
+        <BootLoader />
         <LangProvider>
           <SmoothScroll>
             <Header />

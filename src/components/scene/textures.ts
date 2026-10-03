@@ -135,3 +135,16 @@ export function makeSteamTexture(): THREE.CanvasTexture {
   g.fillRect(0, 0, 128, 128);
   return toTexture(c);
 }
+
+/** One glowing ember mote (embers drifting up from the pass). */
+export function makeEmberTexture(): THREE.CanvasTexture {
+  const c = makeCanvas(64, 64);
+  const g = c.getContext('2d')!;
+  const grad = g.createRadialGradient(32, 32, 1, 32, 32, 30);
+  grad.addColorStop(0, 'rgba(255,214,150,1)');
+  grad.addColorStop(0.35, 'rgba(255,170,90,0.55)');
+  grad.addColorStop(1, 'rgba(255,140,60,0)');
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 64, 64);
+  return toTexture(c);
+}

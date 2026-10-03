@@ -27,6 +27,9 @@ lerna-debug.log*
 # ── Local-only state ────────────────────────────────────────────────────────
 *.local
 
+# ── Glyph pipeline source font (regenerated, see dev tooling/gen-glyphs.mjs) ─
+gen/
+
 # ── Editor directories and files ────────────────────────────────────────────
 .vscode/*
 !.vscode/extensions.json

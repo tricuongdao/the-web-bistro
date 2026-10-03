@@ -1,8 +1,8 @@
-/* ── shared UI primitives ──────────────────────────────────────────────── */
+/* ── shared UI primitives: marquee, split-flap, order ticket, dials ───── */
 
 /* ── the board strip (marquee) ── */
 .marquee {
-  background: var(--sand);
+  background: rgba(255, 255, 255, 0.025);
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
   overflow: hidden;
@@ -23,14 +23,15 @@
 }
 
 .marqueeItem {
-  font-size: 13px;
+  font-family: var(--mono);
+  font-size: 12px;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: var(--ink);
+  color: var(--cream-dim);
 }
 
 .marqueeStar {
-  color: var(--brass);
+  color: var(--copper);
   margin: 0 26px;
 }
 
@@ -50,10 +51,13 @@
 
 .flapBoard {
   position: relative;
-  background: var(--ink);
-  border: 1px solid rgba(224, 169, 59, 0.32);
-  box-shadow: inset 0 0 70px rgba(0, 0, 0, 0.5);
-  padding: 30px 34px 30px 44px;
+  background: rgba(14, 11, 8, 0.68);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-card);
+  backdrop-filter: blur(14px) saturate(130%);
+  -webkit-backdrop-filter: blur(14px) saturate(130%);
+  box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.55), 0 30px 70px -50px rgba(217, 142, 74, 0.4);
+  padding: 28px 32px 28px 42px;
   overflow: hidden;
   perspective: 900px;
 }
@@ -64,28 +68,29 @@
   left: 0;
   top: 0;
   bottom: 0;
-  width: 7px;
-  background: linear-gradient(#e0a93b, #b07c1f);
+  width: 5px;
+  background: var(--grad-ember);
 }
 
 .flapWord {
   font-family: var(--serif);
-  font-size: clamp(32px, 4.4vw, 54px);
-  font-weight: 600;
-  line-height: 1.08;
-  color: var(--gold);
+  font-size: clamp(30px, 4.2vw, 52px);
+  line-height: 1.1;
+  background: var(--grad-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
   transform-origin: 50% 50%;
   min-height: 1.1em;
 }
 
 .flapSplit {
   position: absolute;
-  left: 7px;
+  left: 5px;
   right: 0;
   top: 50%;
   height: 2px;
-  background: var(--ink-2);
-  opacity: 0.85;
+  background: rgba(10, 8, 6, 0.9);
 }
 
 .flapNext {
@@ -93,25 +98,26 @@
   align-items: center;
   gap: 13px;
   flex-wrap: wrap;
+  font-family: var(--mono);
   font-size: 11px;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: var(--green-mute);
+  color: var(--cream-faint);
 }
 
 .flapNext1 {
-  color: var(--green-pale);
+  color: var(--cream-dim);
 }
 
 .flapSlash {
-  color: #4c6a60;
+  color: var(--copper-2);
 }
 
 .flapNext2 {
-  color: var(--green-dim);
+  color: var(--cream-faint);
 }
 
-/* ── order ticket ── */
+/* ── order ticket (paper on the pass) ── */
 .ticketStage {
   position: relative;
   width: 100%;
@@ -127,8 +133,9 @@
   right: -18px;
   height: 8px;
   border-radius: 4px;
-  background: linear-gradient(#c8d6cd, #4c6a60 55%, #10322f);
-  box-shadow: 0 3px 9px rgba(0, 0, 0, 0.55);
+  background: linear-gradient(#5a4633, #241a12 55%, #14100b);
+  border-bottom: 1px solid rgba(217, 142, 74, 0.4);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
 }
 
 .ticketHookL,
@@ -138,7 +145,7 @@
   width: 13px;
   height: 30px;
   border-radius: 3px;
-  background: linear-gradient(#e2d7c3, #7c8a7f);
+  background: linear-gradient(#d8c4a6, #8a6f52);
 }
 
 .ticketHookL {
@@ -155,9 +162,11 @@
 
 .ticket {
   position: relative;
-  background: var(--cream);
+  background: #f4ead9;
+  color: #2a1c12;
   padding: 30px 28px 22px;
-  box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.6);
+  border-radius: 4px;
+  box-shadow: 0 36px 70px -34px rgba(0, 0, 0, 0.9);
   transform-origin: 50% 0%;
   animation: wb-swing 5.6s ease-in-out infinite;
 }
@@ -167,15 +176,16 @@
   justify-content: space-between;
   align-items: baseline;
   gap: 12px;
+  font-family: var(--mono);
   font-size: 10px;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: var(--green-mute);
+  color: #8a6f52;
 }
 
 .ticketDash {
   margin: 14px 0 18px;
-  border-top: 1px dashed #c3b79f;
+  border-top: 1px dashed #d0bb9c;
 }
 
 .ticketBody {
@@ -183,9 +193,10 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  font-family: var(--mono);
   font-size: 13px;
   line-height: 1.5;
-  color: var(--ink);
+  color: #2a1c12;
 }
 
 .ticketLine {
@@ -195,7 +206,7 @@
 .ticketCaret {
   width: 8px;
   height: 15px;
-  background: var(--brass);
+  background: var(--copper-2);
   animation: wb-blink 1.05s steps(1) infinite;
 }
 
@@ -203,27 +214,31 @@
   margin: 16px -28px -22px;
   height: 10px;
   background:
-    linear-gradient(-45deg, #f6efe2 7px, transparent 0) 0 0 / 14px 14px repeat-x,
-    linear-gradient(45deg, #f6efe2 7px, transparent 0) 0 0 / 14px 14px repeat-x;
+    linear-gradient(-45deg, #f4ead9 7px, transparent 0) 0 0 / 14px 14px repeat-x,
+    linear-gradient(45deg, #f4ead9 7px, transparent 0) 0 0 / 14px 14px repeat-x;
 }
 
 /* ── dial gauge cards ── */
 .dialCard {
-  background: var(--paper);
+  background: var(--glass);
   border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  backdrop-filter: blur(14px) saturate(130%);
+  -webkit-backdrop-filter: blur(14px) saturate(130%);
   padding: 26px 22px 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 14px;
   min-width: 0;
-  transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+  height: 100%;
+  transition: transform 0.3s var(--ease-out), border-color 0.3s, box-shadow 0.3s;
 }
 
 .dialCard:hover {
   transform: translateY(-6px);
-  border-color: var(--brass);
-  box-shadow: 0 18px 40px -26px rgba(16, 50, 47, 0.45);
+  border-color: rgba(217, 142, 74, 0.45);
+  box-shadow: 0 26px 54px -32px rgba(217, 142, 74, 0.4);
 }
 
 .dialFace {
@@ -231,9 +246,9 @@
   width: 88px;
   height: 88px;
   border-radius: 50%;
-  background: radial-gradient(circle at 36% 30%, #fffbf3, #efe5d3 62%, #dccfb8);
-  border: 2px solid var(--line);
-  box-shadow: inset 0 3px 8px rgba(16, 50, 47, 0.14), 0 6px 16px -10px rgba(16, 50, 47, 0.5);
+  background: radial-gradient(circle at 36% 28%, #241a12, #14100b 72%);
+  border: 2px solid var(--line-2);
+  box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.7), 0 8px 22px -12px rgba(0, 0, 0, 0.9);
 }
 
 .dialTick {
@@ -244,7 +259,7 @@
   height: 9px;
   margin-left: -1px;
   transform-origin: 50% 39px;
-  background: #c3b79f;
+  background: rgba(247, 241, 230, 0.35);
 }
 
 .dialNeedle {
@@ -255,7 +270,8 @@
   height: 32px;
   margin-left: -1.5px;
   border-radius: 2px;
-  background: var(--brass);
+  background: var(--copper);
+  box-shadow: 0 0 10px rgba(217, 142, 74, 0.6);
   transform-origin: 50% 32px;
   transform: rotate(-135deg);
   transition: transform 1.5s cubic-bezier(0.22, 1.3, 0.36, 1);
@@ -269,8 +285,8 @@
   height: 14px;
   margin: -7px 0 0 -7px;
   border-radius: 50%;
-  background: var(--ink);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  background: #f7f1e6;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
 }
 
 .dialRead {
@@ -289,23 +305,22 @@
 .dialNumber {
   font-family: var(--serif);
   font-size: 38px;
-  font-weight: 600;
   line-height: 1;
-  color: var(--ink);
+  color: var(--cream);
   font-variant-numeric: tabular-nums;
 }
 
 .dialUnit {
   font-family: var(--serif);
   font-size: 21px;
-  font-weight: 600;
-  color: var(--brass);
+  color: var(--copper);
 }
 
 .dialLabel {
+  font-family: var(--mono);
   font-size: 10px;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: var(--green-mute);
+  color: var(--cream-faint);
   text-align: center;
 }
