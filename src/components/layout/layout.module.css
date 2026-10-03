@@ -1,0 +1,250 @@
+/* ── header ───────────────────────────────────────────────────────────── */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  background: var(--ink);
+  border-bottom: 1px solid var(--line-dark);
+}
+
+.headerInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding-top: 14px;
+  padding-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  transition: transform 0.3s var(--ease-spring);
+}
+
+.brand:hover {
+  transform: translateY(-3px);
+}
+
+.brandCol {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.brandName {
+  font-family: var(--serif);
+  font-size: 21px;
+  font-weight: 600;
+  color: var(--cream);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.brandTag {
+  font-size: 8px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  row-gap: 8px;
+  column-gap: 22px;
+}
+
+.navLink {
+  position: relative;
+  white-space: nowrap;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--cream);
+  padding-bottom: 4px;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.navLink:hover {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+}
+
+.navLinkActive {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+}
+
+.langBtn {
+  cursor: pointer;
+  appearance: none;
+  background: transparent;
+  font-family: inherit;
+  white-space: nowrap;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--cream);
+  border: 1px solid rgba(246, 239, 226, 0.4);
+  padding: 11px 14px;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.langBtn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.emailBtn {
+  white-space: nowrap;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: var(--gold);
+  color: var(--ink);
+  padding: 12px 18px;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.emailBtn:hover {
+  background: var(--cream);
+  transform: translateY(-2px);
+}
+
+.stripe {
+  position: relative;
+  height: 5px;
+  background: repeating-linear-gradient(90deg, #e0a93b 0 28px, #f6efe2 28px 56px);
+  overflow: hidden;
+}
+
+.progress {
+  height: 100%;
+  width: 0%;
+  background: var(--ink);
+  opacity: 0.55;
+}
+
+@media (max-width: 720px) {
+  .headerInner {
+    justify-content: center;
+    row-gap: 10px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .nav {
+    column-gap: 16px;
+    row-gap: 10px;
+  }
+
+  .brandName {
+    font-size: 19px;
+  }
+}
+
+/* ── footer ───────────────────────────────────────────────────────────── */
+
+.footer {
+  background: var(--ink-2);
+  border-top: 4px solid var(--gold);
+}
+
+.footerInner {
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+  flex-wrap: wrap;
+  padding-top: 56px;
+  padding-bottom: 40px;
+}
+
+.footBrand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.footBrandCol {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.footName {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--cream);
+}
+
+.footTag {
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.footCols {
+  display: flex;
+  gap: 56px;
+  flex-wrap: wrap;
+}
+
+.footCol {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footLabel {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--green-mute);
+}
+
+.footLink {
+  font-size: 13px;
+  color: var(--green-pale);
+  transition: color 0.2s;
+}
+
+.footLink:hover {
+  color: var(--gold);
+}
+
+.footLine {
+  font-size: 13px;
+  color: var(--green-pale);
+}
+
+.footBottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 40px;
+  font-size: 11px;
+  color: #6e8279;
+}
+
+@media (max-width: 720px) {
+  .footerInner {
+    flex-direction: column;
+    gap: 32px;
+    padding-top: 40px;
+  }
+
+  .footCols {
+    gap: 36px;
+  }
+}

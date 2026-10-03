@@ -1,0 +1,17 @@
+.sweep {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-sweep);
+  pointer-events: none;
+  background: var(--ink);
+  display: none;
+}
+
+.sweepStripe {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 6px;
+  background: repeating-linear-gradient(90deg, #e0a93b 0 28px, #f6efe2 28px 56px);
+}

@@ -1,58 +1,109 @@
 /*
- * Review helper: finds every string passed through t(...) in the components
- * and reports which ones are missing from the VI dictionary in i18n.js.
- * Run: npm run check:i18n   (or: node "dev tooling/check-i18n.mjs")
+ * i18n coverage check: every English string the site can render must have a
+ * Vietnamese translation in src/lib/i18n.ts.
+ *
+ * Collects: every t('...') literal in src/** + every string inside the data
+ * structures of src/lib/content.ts (which are all rendered through t()).
+ * Also checks DISHES/DISHES_VI, TICKET/TICKET_VI and FLAP parity.
+ *
+ * Run: npm run check:i18n   (node "dev tooling/check-i18n.mjs")
  */
+
 import { readFileSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { I18N, TICKET, TICKET_VI, FLAP } from '../src/lib/i18n.ts';
+import * as content from '../src/lib/content.ts';
 
-// Resolved relative to this file, so the script works from any cwd.
-const SRC = join(dirname(fileURLToPath(import.meta.url)), '..', 'src');
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
+const SRC = join(ROOT, 'src');
 
 function walk(dir) {
   return readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
-    e.isDirectory() ? walk(join(dir, e.name)) : [join(dir, e.name)]
+    e.isDirectory() ? walk(join(dir, e.name)) : [join(dir, e.name)],
   );
 }
 
-const files = walk(SRC).filter((f) => f.endsWith('.jsx') || f.endsWith('.js'));
 const strings = new Set();
 
+/* 1 — t('...') and t("...") literals in every source file */
+const files = walk(SRC).filter((f) => /\.(ts|tsx)$/.test(f));
 for (const f of files) {
-  if (f.endsWith('i18n.js')) continue;
+  if (f.endsWith('i18n.ts')) continue;
   const src = readFileSync(f, 'utf8');
-  // t('...') / t("...") — including multi-line template-ish calls
-  for (const m of src.matchAll(/\bt\(\s*(['"])((?:\\.|(?!\1).)*)\1/g)) {
-    strings.add(m[2].replace(/\\'/g, "'").replace(/\\"/g, '"'));
-  }
-  // also catch data tables rendered through t(): t(table.title) etc. handled via I18N keys below
+  for (const m of src.matchAll(/\bt\(\s*'((?:\\.|[^'\\])*)'/g)) strings.add(m[1].replace(/\\'/g, "'"));
+  for (const m of src.matchAll(/\bt\(\s*"((?:\\.|[^"\\])*)"/g)) strings.add(m[1].replace(/\\"/g, '"'));
 }
 
-const i18nSrc = readFileSync(join(SRC, 'i18n.js'), 'utf8');
-const keys = new Set();
-for (const m of i18nSrc.matchAll(/^\s{2}(['"])(.*?)\1\s*:/gm)) keys.add(m[2]);
+/* 2 — every string inside the content data (rendered via t()) */
+const collect = (value) => {
+  if (typeof value === 'string') strings.add(value);
+  else if (Array.isArray(value)) value.forEach(collect);
+  else if (value && typeof value === 'object') Object.values(value).forEach(collect);
+};
+[
+  content.MENU,
+  content.SIDES,
+  content.CARE,
+  content.SPECIALS,
+  content.PROCESS,
+  content.RULES,
+  content.FAQ,
+  content.TABLES,
+  content.RISK,
+  content.NAV,
+].forEach(collect);
 
-// Strings referenced inside data arrays (Header/Footer NAV, WorkPage TABLES, MenuPage rows)
-const extra = [
-  'Front of house', 'The menu', 'Opening offer', 'Reservations', 'Web development', 'Email me',
-  'Table one', 'Table two', 'Table three',
-  'Starters', 'Mains', 'Sides', 'Everything I serve',
-  'Small, fast, done in a week', 'The full build', 'Good with anything above',
-  '1 page · 1 week', 'Audit · fix · hand back', '5–8 pages · 3–4 weeks',
-  'Payments · stock · shipping', 'Scoped per project',
-  'SEO Groundwork', 'Analytics Setup',
-  'Nothing here quite fits?', 'Ask the kitchen', 'Monthly hosting, backups, updates and a slice of my time for small changes. Cancel when you like. Your site and domain stay yours.',
-  'Hungry? Tell me what you need.', 'Book a table',
-  'Pages', 'Get in touch', '@thewebbistro on Instagram', 'Open 7 days a week, 9 to 6',
-];
-extra.forEach((s) => strings.add(s));
+/* things that are deliberately not translated (prices, numbers, wiring) */
+const skip = new Set([
+  content.CONTACT.email,
+  content.CONTACT.instagram,
+  content.FORM_ENDPOINT,
+  content.BUILD_URL,
+  ...Object.values(content.PRICES),
+  '/',
+  '/menu',
+  '/work',
+  '/book',
+  '3',
+  '24',
+  '100',
+  '7',
+  '×',
+  'h',
+  'd',
+  '',
+]);
 
 let missing = 0;
 for (const s of [...strings].sort()) {
-  if (!keys.has(s)) {
-    missing++;
+  if (skip.has(s)) continue;
+  if (!(s in I18N)) {
+    missing += 1;
     console.log(`MISSING VI translation: "${s}"`);
   }
 }
-console.log(missing === 0 ? `\nAll ${strings.size} strings have VI translations.` : `\n${missing} string(s) fall back to English in VI mode.`);
+
+/* 3 — parity checks */
+for (const d of content.DISHES) {
+  if (!(d in content.DISHES_VI)) {
+    missing += 1;
+    console.log(`MISSING dish translation: "${d}"`);
+  }
+}
+if (TICKET.length !== TICKET_VI.length) {
+  missing += 1;
+  console.log('TICKET / TICKET_VI length mismatch');
+}
+if (FLAP.en.length !== FLAP.vi.length) {
+  missing += 1;
+  console.log('FLAP en/vi length mismatch');
+}
+
+const checked = strings.size - skip.size;
+console.log(
+  missing === 0
+    ? `\nAll ${checked} rendered strings have VI translations.`
+    : `\n${missing} string(s) would fall back to English in VI mode.`,
+);
+process.exit(missing === 0 ? 0 : 1);

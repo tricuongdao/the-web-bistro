@@ -1,57 +1,90 @@
 # The Web Bistro
 
-Single-page-style portfolio site for The Web Bistro, built with React 19 + Vite. No router, no state library, no CSS framework — hash routing and inline styles keep the bundle tiny.
+Websites that bring customers in. One chef, no agency, no template tricks.
+
+Rebuilt in 2026 on **Next.js (App Router)**: real routes, a WebGL hero, scroll-driven
+storytelling, and smooth scrolling. Bilingual: English and Tiếng Việt.
+
+## Stack
+
+| Piece | What it does |
+| --- | --- |
+| Next.js 16 + React 19 + TypeScript | App Router, real URLs (`/`, `/menu`, `/work`, `/book`, `/privacy`) |
+| three.js + @react-three/fiber + drei | The hero scene: brass cloche, floating order tickets, steam — `src/components/scene/` |
+| GSAP + ScrollTrigger | Pinned "how service runs" station pan, header scroll progress |
+| Lenis | Smooth scrolling — `src/components/providers/SmoothScroll.tsx` |
+| Motion | Reveals and micro-interactions — `src/components/ui/Reveal.tsx` |
+| CSS tokens + CSS modules | No CSS framework. Palette/type tokens in `src/app/globals.css` |
+
+All motion collapses cleanly under `prefers-reduced-motion` (no Lenis, no pins,
+the 3D scene freezes, every reveal is instant).
 
 ## Getting started
 
 ```bash
 npm install
-npm run dev      # http://localhost:5173
-npm run build    # production build in dist/
-npm run lint     # oxlint
+npm run dev        # http://localhost:3000
+npm run build      # production build
+npm start          # serve the production build
+npm run lint       # oxlint
 ```
 
-## Contact form → your email
+## Editing content (no code needed)
 
-The booking form on `#/book` sends every order to **tricuongdao75@gmail.com**. It is wired to Formspree via one constant in `src/i18n.js`:
+- **`src/lib/content.ts`** — everything structured: services, prices, FAQ,
+  process stations, house rules, contact details, the form endpoint.
+  - ⚠ **`PRICES` are launch placeholders** (marked in the file). Replace the
+    amounts with real numbers before launch; the menu, specials and care banner
+    all read from there.
+- **`src/lib/i18n.ts`** — every English → Vietnamese translation. English
+  strings are the source of truth; `t('...')` looks them up.
 
-```js
-export const FORM_ENDPOINT = 'https://formspree.io/f/xdeokvek';
-```
+House punctuation rule: **no em dashes or en dashes anywhere user-visible.**
+Hyphen only. The `check:i18n` and `check:render` scripts enforce coverage and
+flag stray dashes.
 
-- **With the endpoint set (current):** submissions POST as JSON to Formspree ([form xdeokvek](https://formspree.io/f/xdeokvek)), which emails them to the bistro inbox — no mail-client hop for the visitor. Manage submissions at [formspree.io/forms](https://formspree.io/forms).
-- **`''` (fallback mode):** submitting opens the visitor's mail client with the order pre-filled (name, email, dishes picked, message) and addressed to the bistro inbox.
+## The booking form
 
-> **One-time Formspree setting:** AJAX submissions are rejected with a 403 until reCAPTCHA is disabled for this form. Go to <https://formspree.io/forms/xdeokvek/settings> → **reCAPTCHA** → toggle **off** (the site already ships its own `_gotcha` honeypot, so spam protection is covered).
+`/book` posts JSON to Formspree (form `xdeokvek`) → tricuongdao75@gmail.com.
+Configured via `FORM_ENDPOINT` in `src/lib/content.ts`:
 
-How the submission works (Formspree's AJAX API — plain `fetch`, no SDK dependency):
+- **Set (current):** submissions POST via Formspree's AJAX API with a `_gotcha`
+  honeypot and `_replyto`. If the POST fails, the form shows a direct `mailto:`
+  fallback so no order is ever silently lost.
+- **`''` (fallback mode):** submitting opens the visitor's mail client with the
+  order pre-filled.
 
-- POSTs JSON with `Accept: application/json` (fields: `name`, `email`, `message`, `dishes`, plus `_replyto` and `_subject`).
-- A honeypot field (`_gotcha`) is rendered in this mode to catch spam bots.
-- The visitor's email is validated client-side first; server-side errors surface in a `role="alert"` region (EN/VI).
-- On any send failure the form shows a direct `mailto:` fallback link, so no order is ever silently lost.
+> One-time Formspree setting: AJAX submissions are rejected with a 403 until
+> reCAPTCHA is disabled for this form (https://formspree.io/forms/xdeokvek/settings).
 
-## Pages & routing
-
-Hash routing (`#/`, `#/menu`, `#/work`, `#/book`) — deep links and browser back/forward work with no router dependency. Nav links are real `<a>` elements; each page sets its own `document.title`.
-
-## i18n
-
-All copy lives in `src/i18n.js`. English strings are the source of truth; Vietnamese translations are looked up at render time. `<html lang>` stays in sync and the choice persists in `localStorage`.
-
-## Verification scripts
-
-All verification tooling lives in `dev tooling/` and is wired to npm scripts:
+## Verification
 
 ```bash
-npm run lint             # oxlint
-npm run check:i18n       # every EN string has a VI translation
-npm run check:render     # SSR-render all pages, assert content (33 checks)
-npm run check:hover      # CDP hover/sticky-hover checks (dev server on :5173)
+npm run check:i18n     # every rendered string has a VI translation
+npm run check:render   # needs `npm run dev` on :3000 — drives headless Edge
+                       # via CDP: asserts all routes (EN + VI), watches for
+                       # console errors, saves screenshots to dev tooling/shots/
 ```
 
-## Performance notes
+## Deploying (Vercel)
 
-- The 55ms hero animation interval only runs on the home page and pauses in hidden tabs.
-- Google Fonts load via `preconnect` + `<link>` in `index.html` (not a blocking `@import` inside CSS).
-- Reveal stagger timers are cleaned up on page change; hover state is skipped on touch-only devices.
+- `vercel.json` declares `"framework": "nextjs"`.
+- If the Vercel project still has the old **Framework Preset pinned to Vite**
+  (Project → Settings → Build & Development), switch it to **Next.js** once.
+  After that, every push to the production branch ships.
+- The old Vite version of the site lives on the local `legacy-vite` git branch.
+
+## Layout
+
+```
+src/
+  app/            routes (layout, page, menu, work, book, privacy, 404, sitemap)
+  components/
+    home/         hero + home sections
+    scene/        the WebGL pass (cloche, tickets, steam, textures)
+    layout/       header, footer, route sweep
+    ui/           awning mark, reveals, marquee, split-flap, dials, ticket
+    providers/    language, smooth scroll, sweep
+    menu/ work/ book/ legal/   page bodies
+  lib/            content.ts (copy & data), i18n.ts (translations)
+```
