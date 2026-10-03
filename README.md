@@ -88,7 +88,11 @@ started with `--user-data-dir=*wb-cdp*`, then rerun.
 
 ## Deploying (Vercel)
 
-- `vercel.json` declares `"framework": "nextjs"`.
+- `vercel.json` declares `"framework": "nextjs"` and
+  `"outputDirectory": null` — the latter overrides the stale `dist` output
+  directory left over from the Vite era (Vercel fails with
+  "output directory dist was not found" otherwise). It also pins Node 22 via
+  `engines` in package.json (Next 16 needs Node >= 20.9).
 - If the Vercel project still has the old **Framework Preset pinned to Vite**
   (Project → Settings → Build & Development), switch it to **Next.js** once.
 - The old Vite version of the site lives on the local `legacy-vite` git branch;
