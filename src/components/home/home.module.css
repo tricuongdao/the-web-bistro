@@ -125,10 +125,13 @@
 }
 
 @media (max-width: 940px) {
+  /* stacked layout: the copy sits at the top of the fold and the crest gets
+     its own band underneath — 320px of it, which is what the 3D rig is
+     sized against (see the lowPower placement in CrestScene) */
   .hero {
     min-height: 100vh;
     padding-top: 150px;
-    padding-bottom: 150px;
+    padding-bottom: 320px;
   }
 
   .heroCopy {

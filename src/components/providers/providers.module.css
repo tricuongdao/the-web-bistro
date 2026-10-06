@@ -1,17 +1,78 @@
-.sweep {
+/* ── the pass curtain: what covers a route change ─────────────────────── */
+
+.curtain {
   position: fixed;
   inset: 0;
   z-index: var(--z-sweep);
-  pointer-events: none;
-  background: #0b0906;
+  /* while it is down the curtain swallows clicks: nobody should be able to
+     hit a link on a page they cannot see */
+  pointer-events: auto;
   display: none;
+  overflow: hidden;
+  background: linear-gradient(180deg, #0a0806 0%, #140d07 44%, #0a0806 100%);
+  will-change: transform;
 }
 
-.sweepStripe {
+/* the copper edge that leads the wipe */
+.curtainEdge {
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, #d98e4a 30%, #ffcf95 50%, #d98e4a 70%, transparent);
+  inset: 0 0 auto;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #d98e4a 20%, #ffcf95 50%, #d98e4a 80%, transparent);
+  box-shadow: 0 0 40px rgba(217, 142, 74, 0.55);
+}
+
+/* the shadow the panel drags behind it as it leaves */
+.curtainFoot {
+  position: absolute;
+  inset: auto 0 0;
+  height: 140px;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.55), transparent);
+}
+
+.curtainGlow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(520px circle at 50% 46%, rgba(217, 142, 74, 0.16), transparent 66%);
+}
+
+.curtainInner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  will-change: transform, opacity, filter;
+}
+
+.curtainMark {
+  font-family: var(--serif);
+  font-size: 44px;
+  line-height: 1;
+  letter-spacing: 2px;
+  color: var(--cream);
+  animation: wb-breathe 1.6s ease-in-out infinite;
+}
+
+.curtainSemi {
+  color: var(--copper);
+  font-size: 0.72em;
+  margin-left: 0.06em;
+}
+
+/* the docket's dashed rule, same as the order tickets */
+.curtainRule {
+  width: 76px;
+  height: 1px;
+  background: repeating-linear-gradient(90deg, var(--line-2) 0 6px, transparent 6px 11px);
+}
+
+.curtainLabel {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 3.4px;
+  text-transform: uppercase;
+  color: var(--copper);
 }

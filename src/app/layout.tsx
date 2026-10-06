@@ -3,7 +3,7 @@ import { DM_Serif_Display, JetBrains_Mono, Manrope, Noto_Serif_Display } from 'n
 import './globals.css';
 import { LangProvider } from '@/components/providers/LangProvider';
 import SmoothScroll from '@/components/providers/SmoothScroll';
-import RouteSweep from '@/components/providers/RouteSweep';
+import RouteTransition from '@/components/providers/RouteTransition';
 import SmoothCursor from '@/components/providers/SmoothCursor';
 import BootLoader from '@/components/layout/BootLoader';
 import Header from '@/components/layout/Header';
@@ -87,7 +87,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <LangProvider>
           <SmoothScroll>
             <Header />
-            <RouteSweep />
+            <RouteTransition />
             <SmoothCursor />
             {children}
             <Footer />

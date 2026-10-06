@@ -16,21 +16,26 @@ const cache = new Map<string, THREE.BufferGeometry>();
  * Extruded geometry for one glyph, in font units (upem 1000, cap height
  * 660). Coordinates arrive SVG-style (y down); we flip to three's y-up,
  * which inverts the winding — every crest material must render DoubleSide.
+ *
+ * Depth is deliberately shallow: the mark is a brass sign with enamel
+ * poured in, not a slab, so the walls stay thinner than the strokes.
+ * ExtrudeGeometry groups the caps on material 0 and the walls on 1, which
+ * is what lets a mesh take [face, wall] materials.
  */
-export function glyphGeometry(ch: GlyphChar, depth = 160): THREE.BufferGeometry {
-  const key = `${String(ch)}:${depth}`;
+export function glyphGeometry(ch: GlyphChar, depth = 70, bevel = 11): THREE.BufferGeometry {
+  const key = `${String(ch)}:${depth}:${bevel}`;
   const hit = cache.get(key);
   if (hit) return hit;
 
   const { d } = glyphs.glyphs[ch];
   const parsed = new SVGLoader().parse(`<svg xmlns="http://www.w3.org/2000/svg"><path d="${d}"/></svg>`);
-  const shapes = parsed.paths.flatMap((p) => SVGLoader.createShapes(p));
+  const shapes = parsed.paths.flatMap((p) => p.toShapes());
 
   const geo = new THREE.ExtrudeGeometry(shapes, {
     depth,
     bevelEnabled: true,
-    bevelThickness: 16,
-    bevelSize: 10,
+    bevelThickness: bevel,
+    bevelSize: bevel * 0.62,
     bevelSegments: 3,
     curveSegments: 12,
   });
