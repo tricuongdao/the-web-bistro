@@ -25,19 +25,20 @@ export const FORM_ENDPOINT = 'https://formspree.io/f/xdeokvek';
 export const BUILD_URL = 'thewebbistro.com/your-new-site';
 
 /* ═══════════════════════════════════════════════════════════════════════
-   PRICING — placeholders, tune before launch.
+   PRICING — starting prices, cheap on purpose.
 
-   ⚠ These are starting prices shown on the menu and the home page. They
-   are EDITABLE PLACEHOLDERS: replace the amounts below with real numbers
-   before launch, everything on the site reads from here.
+   ⚠ The entry point of the whole ladder is $50 (Site Rescue, the cheapest
+   row on the menu). Every amount is shown on the menu and the home page
+   and NOTHING else on the site hard-codes a price: move a number here and
+   the copy follows.
    ═══════════════════════════════════════════════════════════════════════ */
 
 export const PRICES = {
-  landing: '$480',
-  rescue: '$240',
-  marketing: '$2,400',
-  store: '$3,900',
-  care: '$59',
+  landing: '$100',
+  rescue: '$50',
+  marketing: '$750',
+  store: '$1,500',
+  care: '$19',
 } as const;
 
 /* ═══════════════════════════════════════════════════════════════════════

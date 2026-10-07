@@ -125,7 +125,10 @@ check('home: eyebrow', has('Two of three opening tables free'));
 check('home: order ticket typing', has('The Web Bistro') && has('Order #0142'));
 check('home: process headline', has('Every job leaves the kitchen the same way.'));
 check('home: stations', has('Brief in') && has('Ticket up') && has('Served'));
-check('home: specials with prices', has('Three things I cook most') && has('From $480'));
+check(
+  'home: specials with prices',
+  has('Three things I cook most') && has('From $100') && has('From $1,500') && has('$19'),
+);
 check('home: pass board', has('Tonight the kitchen is cooking') && has('Next up'));
 check('home: numbers', has('By the numbers') && has('Performance target'));
 check('home: house rules', has('What you get, in writing') && has('Fixed quote first'));
@@ -180,9 +183,14 @@ await evalJs("localStorage.setItem('wb-lang','en')");
 await load('/menu');
 check('menu: title', has('Everything I serve'));
 check('menu: starters', has('Landing Page') && has('Site Rescue'));
-check('menu: prices', has('From $240') && has('From $2,400') && has('From $3,900'));
+check(
+  'menu: prices',
+  has('From $50') && has('From $100') && has('From $750') && has('From $1,500'),
+);
+/* the whole ladder is anchored here: $50 is the cheapest thing on the menu */
+check('menu: entry price is $50', has('From $50'));
 check('menu: quote-in-a-day row', has('Quote in a day'));
-check('menu: care banner', has('Hosting & Care') && has('$59'));
+check('menu: care banner', has('Hosting & Care') && has('$19'));
 check('menu: cta', has('Nothing here quite fits?') && has('Ask the kitchen'));
 await shot('menu-desktop');
 
