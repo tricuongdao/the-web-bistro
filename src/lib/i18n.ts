@@ -171,10 +171,6 @@ export const I18N: Record<string, string> = {
   '1 page · 1 week': '1 trang · 1 tuần',
   'One page built around a single action: call, book or buy. Copy, form and tracking come with it.':
     'Một trang xoay quanh một hành động: gọi, đặt hoặc mua. Kèm nội dung, form và phần đo lường.',
-  'Site Rescue': 'Cứu hộ website',
-  'Audit · fix · hand back': 'Rà soát · sửa · trả lại',
-  'Your current site, fast and readable again. I strip the bloat, fix what broke, and write down every change I made.':
-    'Website hiện tại của bạn, nhanh và dễ đọc trở lại. Tôi bỏ phần nặng nề, sửa chỗ hỏng và ghi lại mọi thay đổi.',
   'Mains': 'Các món chính',
   'The full build': 'Bản đầy đủ',
   'Marketing Website': 'Website giới thiệu',
@@ -307,8 +303,8 @@ export const TICKET_VI: string[] = [
  * Split-flap board words, per language.
  */
 export const FLAP = {
-  en: ['Landing pages', 'Online stores', 'Web apps', 'Site rescues', 'SEO groundwork', 'Hosting & care'],
-  vi: ['Trang đích', 'Cửa hàng trực tuyến', 'Ứng dụng web', 'Cứu hộ website', 'Nền tảng SEO', 'Hosting & bảo trì'],
+  en: ['Landing pages', 'Online stores', 'Web apps', 'SEO groundwork', 'Hosting & care'],
+  vi: ['Trang đích', 'Cửa hàng trực tuyến', 'Ứng dụng web', 'Nền tảng SEO', 'Hosting & bảo trì'],
 };
 
 /*

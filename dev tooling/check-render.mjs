@@ -127,7 +127,7 @@ check('home: process headline', has('Every job leaves the kitchen the same way.'
 check('home: stations', has('Brief in') && has('Ticket up') && has('Served'));
 check(
   'home: specials with prices',
-  has('Three things I cook most') && has('From $100') && has('From $1,500') && has('$19'),
+  has('Three things I cook most') && has('From $50') && has('From $200') && has('$19'),
 );
 check('home: pass board', has('Tonight the kitchen is cooking') && has('Next up'));
 check('home: numbers', has('By the numbers') && has('Performance target'));
@@ -182,10 +182,10 @@ await evalJs("localStorage.setItem('wb-lang','en')");
 /* ── menu ──────────────────────────────────────────────────────────────── */
 await load('/menu');
 check('menu: title', has('Everything I serve'));
-check('menu: starters', has('Landing Page') && has('Site Rescue'));
+check('menu: starters', has('Landing Page') && !has('Site Rescue'));
 check(
   'menu: prices',
-  has('From $50') && has('From $100') && has('From $750') && has('From $1,500'),
+  has('From $50') && has('From $200'),
 );
 /* the whole ladder is anchored here: $50 is the cheapest thing on the menu */
 check('menu: entry price is $50', has('From $50'));

@@ -27,17 +27,16 @@ export const BUILD_URL = 'thewebbistro.com/your-new-site';
 /* ═══════════════════════════════════════════════════════════════════════
    PRICING — starting prices, cheap on purpose.
 
-   ⚠ The entry point of the whole ladder is $50 (Site Rescue, the cheapest
+   ⚠ The entry point of the whole ladder is $50 (Landing Page, the cheapest
    row on the menu). Every amount is shown on the menu and the home page
    and NOTHING else on the site hard-codes a price: move a number here and
    the copy follows.
    ═══════════════════════════════════════════════════════════════════════ */
 
 export const PRICES = {
-  landing: '$100',
-  rescue: '$50',
-  marketing: '$750',
-  store: '$1,500',
+  landing: '$50',
+  marketing: '$200',
+  store: '$200',
   care: '$19',
 } as const;
 
@@ -76,12 +75,6 @@ export const MENU: MenuSection[] = [
         meta: '1 page · 1 week',
         body: 'One page built around a single action: call, book or buy. Copy, form and tracking come with it.',
         from: PRICES.landing,
-      },
-      {
-        title: 'Site Rescue',
-        meta: 'Audit · fix · hand back',
-        body: 'Your current site, fast and readable again. I strip the bloat, fix what broke, and write down every change I made.',
-        from: PRICES.rescue,
       },
     ],
   },
@@ -319,7 +312,6 @@ export const DISHES: string[] = [
   'Marketing website',
   'Online store',
   'Web app',
-  'Site rescue',
   'Hosting & care',
   'Not sure yet',
 ];
@@ -329,7 +321,6 @@ export const DISHES_VI: Record<string, string> = {
   'Marketing website': 'Website giới thiệu',
   'Online store': 'Cửa hàng trực tuyến',
   'Web app': 'Ứng dụng web',
-  'Site rescue': 'Cứu hộ website',
   'Hosting & care': 'Hosting & bảo trì',
   'Not sure yet': 'Chưa rõ',
 };
